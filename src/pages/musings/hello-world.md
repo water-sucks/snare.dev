@@ -1,5 +1,5 @@
 ---
-layout: '../../layouts/PostLayout.astro'
+layout: '@layouts/PostLayout.astro'
 title: 'Hello, World!'
 pubDate: 2024-04-14
 description: 'Are things working?'
