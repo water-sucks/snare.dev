@@ -10,12 +10,12 @@ posts.sort(
 
 <Layout pageTitle="Musings">
   <h1>Musings</h1>
-  <blockquote>
-    <i
-      >I seek to be free from the concept of meaning, to carve my own reality.</i
-    >
+
+  <blockquote class="typed">
+    <i>
+      I seek to be free from the concept of meaning, to carve my own reality.
+    </i>
   </blockquote>
-  <p>-&gt; Varun Narravula</p>
   <p>
     These are my musings, my reflections on life. I love philosophy, and seek to
     understand the world in all of its idiosyncrasies. At times, I'll also write
@@ -51,5 +51,24 @@ posts.sort(
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 15px;
+  }
+
+  .typed {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
+    animation: typing;
+    animation-duration: 2s;
+    animation-timing-function: steps(30, end);
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
   }
 </style>
