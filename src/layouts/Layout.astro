@@ -16,9 +16,17 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle} | Varun Narravula</title>
+    <style>
+      .page-container {
+        max-width: 80ch;
+        margin: auto;
+      }
+    </style>
   </head>
-  <body>
-    <Header />
-    <slot />
-  </body>
 </html>
+<body>
+  <Header />
+  <div class="page-container">
+    <slot />
+  </div>
+</body>

@@ -1,6 +1,7 @@
 ---
+layout: '../../layouts/PostLayout.astro'
 title: 'Hello, World!'
-pubDate: 2024-
+pubDate: 2024-04-14
 description: 'Are things working?'
 author: 'Varun Narravula'
 image:
@@ -8,8 +9,6 @@ image:
   alt: 'The "This is fine" dog with everything around it on fire meme'
 tags: ['hello', 'blog']
 ---
-
-# Hello, World!
 
 This is mostly a test to see if things are working. If things aren't working,
 something is horribly wrong, so send me a message! Of course, I want people to
@@ -21,6 +20,8 @@ shortcomings as a language. I often use
 and then convert them to Markdown after that. It has great support for a lot of
 things, but it's still beta-quality software. However, if you use `neovim`, it's
 worth a try.
+
+---
 
 ## Code Blocks
 

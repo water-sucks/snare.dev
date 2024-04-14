@@ -1,0 +1,16 @@
+---
+import '../styles/global.css';
+import '@fontsource/ibm-plex-mono';
+import Layout from '../layouts/Layout.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Layout pageTitle={frontmatter.title}>
+  <div class="page-container">
+    <main>
+      <h1>{frontmatter.title}</h1>
+      <slot />
+    </main>
+  </div>
+</Layout>
