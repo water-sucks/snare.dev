@@ -1,9 +1,10 @@
 ---
 layout: '@layouts/PostLayout.astro'
 title: 'Hello, World!'
-pubDate: 2024-04-14
+date: 2024/04/01
 description: 'Are things working?'
 author: 'Varun Narravula'
+timeToRead: 1 minute
 image:
   url: 'https://i.redd.it/x891ae81g3b71.png'
   alt: 'The "This is fine" dog with everything around it on fire meme'

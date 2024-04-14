@@ -9,6 +9,12 @@ body {
   width: 100%;
 }
 
+a {
+  color: #ff7979;
+  text-decoration: none;
+  /* no underline */
+}
+
 /* For Shiki code blocks */
 pre {
   margin: 0.5rem 0 16px;

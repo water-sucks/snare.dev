@@ -1,14 +1,55 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import PostPreviewCard from '@components/PostPreviewCard.astro';
+
+const posts = await Astro.glob('./musings/*.md');
+posts.sort(
+  (a, b) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date),
+);
 ---
 
 <Layout pageTitle="Musings">
   <h1>Musings</h1>
+  <blockquote>
+    <i
+      >I seek to be free from the concept of meaning, to carve my own reality.</i
+    >
+  </blockquote>
+  <p>-&gt; Varun Narravula</p>
   <p>
-    I will be writing a blog here soon. It'll have stuff about random things;
-    you'll know it once you see it. Stay tuned!
+    These are my musings, my reflections on life. I love philosophy, and seek to
+    understand the world in all of its idiosyncrasies. At times, I'll also write
+    on some rather personal subjects. I may not be a particularly good writer,
+    but frankly, I could care less. If you don't want to read, you can always
+    click off the page, I don't mind at all.
   </p>
-  <ul>
-    <li><a href="/musings/hello-world/">Hello world!</a></li>
-  </ul>
+  <p>
+    Also some fun, random content for those that are stuck in this cycle of
+    seeking knowledge.
+  </p>
+  <div class="grid-container" id="cards">
+    {
+      posts.map((post) => {
+        const { title, image, description, date } = post.frontmatter;
+
+        return (
+          <PostPreviewCard
+            {title}
+            url={post.url}
+            image={image.url}
+            {description}
+            {date}
+          />
+        );
+      })
+    }
+  </div>
 </Layout>
+
+<style>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+  }
+</style>

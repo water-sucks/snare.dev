@@ -4,13 +4,33 @@ import '@fontsource/ibm-plex-mono';
 import Layout from '@layouts/Layout.astro';
 
 const { frontmatter } = Astro.props;
+const { title, date, tags, timeToRead } = frontmatter;
+
+const dateObj = new Date(date);
+const formattedDate = dateObj.toLocaleDateString('en-us', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
 ---
 
-<Layout pageTitle={frontmatter.title}>
+<Layout pageTitle={title}>
   <div class="page-container">
     <main>
-      <h1>{frontmatter.title}</h1>
+      <h1>{title}</h1>
+      <div class="metadata-line">
+        {formattedDate} :: {tags.map((tag: string) => `#${tag}`).join(', ')} :: {
+          timeToRead
+        }
+      </div>
       <slot />
     </main>
   </div>
 </Layout>
+
+<style>
+  .metadata-line {
+    text-align: center;
+    color: #888888;
+  }
+</style>
