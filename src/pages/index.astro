@@ -1,21 +1,16 @@
 ---
-
+import Layout from '../components/Layout.astro';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Home | Varun Narravula</title>
-  </head>
-  <body>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/musings">Musings</a>
+<Layout pageTitle="Home">
+  <style>
+    .page-container {
+      text-align: center;
+    }
+  </style>
 
+  <div class="page-container">
     <h1>Goodbye, cruel world!</h1>
-    <p>Just kidding. I like doing that for Hello, world! type things.</p>
-  </body>
-</html>
+    <p>Just kidding. I like doing that for "Hello, world!"-type things.</p>
+  </div>
+</Layout>

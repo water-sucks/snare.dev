@@ -1,0 +1,33 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<style>
+  #home-button {
+    font-weight: bold;
+  }
+
+  .link {
+    color: #ff7979;
+    font-size: 1em;
+  }
+
+  .active-link {
+    color: #6d0011;
+  }
+</style>
+
+<div id="home-button" class="link">
+  <a class={currentPath === '/' ? 'active-link' : 'link'} href="/">Home</a>
+</div>
+
+<div>
+  <a href="/about" class={currentPath === '/about' ? 'active-link' : 'link'}
+    >About</a
+  >
+  <a
+    href="/musings"
+    class={currentPath.startsWith('/musings') ? 'active-link' : 'link'}
+    >Musings</a
+  >
+</div>

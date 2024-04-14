@@ -1,27 +1,22 @@
 ---
-
+import Layout from '../components/Layout.astro';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Musings | Varun Narravula</title>
-  </head>
-  <body>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/musings">Musings</a>
+<Layout pageTitle="Musings">
+  <style>
+    .page-container {
+      text-align: center;
+    }
+  </style>
 
+  <div class="page-container">
     <h1>Musings</h1>
     <p>
       I will be writing a blog here soon. It'll have stuff about random things;
       you'll know it once you see it. Stay tuned!
     </p>
-    <ul>
-      <li><a href="/posts/hello-world/">Hello world!</a></li>
-    </ul>
-  </body>
-</html>
+  </div>
+  <ul>
+    <li><a href="/posts/hello-world/">Hello world!</a></li>
+  </ul>
+</Layout>
