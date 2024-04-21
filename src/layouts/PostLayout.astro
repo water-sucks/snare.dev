@@ -5,7 +5,7 @@ import Layout from '@layouts/Layout.astro';
 import { format } from 'date-fns';
 
 const { frontmatter } = Astro.props;
-const { title, date, tags, timeToRead } = frontmatter;
+const { title, date, tags, timeToRead, image } = frontmatter;
 
 const formattedDate = format(new Date(date), 'PPP');
 ---
@@ -19,6 +19,8 @@ const formattedDate = format(new Date(date), 'PPP');
           timeToRead
         }
       </div>
+      <img class="top-image" src={image.url} alt={image.alt} />
+      <hr />
       <slot />
     </main>
   </div>
@@ -28,5 +30,11 @@ const formattedDate = format(new Date(date), 'PPP');
   .metadata-line {
     text-align: center;
     color: #888888;
+  }
+
+  .top-image {
+    width: 100%;
+    padding-top: 1em;
+    padding-bottom: 1em;
   }
 </style>
