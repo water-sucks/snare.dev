@@ -2,16 +2,12 @@
 import '@styles/global.css';
 import '@fontsource/ibm-plex-mono';
 import Layout from '@layouts/Layout.astro';
+import { format } from 'date-fns';
 
 const { frontmatter } = Astro.props;
 const { title, date, tags, timeToRead } = frontmatter;
 
-const dateObj = new Date(date);
-const formattedDate = dateObj.toLocaleDateString('en-us', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-});
+const formattedDate = format(new Date(date), 'PPP');
 ---
 
 <Layout pageTitle={title}>

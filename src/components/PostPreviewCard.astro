@@ -1,12 +1,8 @@
 ---
+import { format } from 'date-fns';
 const { title, description, date, url, image } = Astro.props;
 
-const dateObj = new Date(date);
-const formattedDate = dateObj.toLocaleDateString('en-us', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-});
+const formattedDate = format(new Date(date), 'PPP');
 ---
 
 <div class="card">
