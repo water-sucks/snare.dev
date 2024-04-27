@@ -2,6 +2,7 @@
 import '@styles/global.css';
 import '@fontsource/ibm-plex-mono';
 import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
 
 type Props = {
   pageTitle: string;
@@ -18,8 +19,10 @@ const { pageTitle } = Astro.props;
     <title>{pageTitle} | Varun Narravula</title>
     <style>
       .page-container {
+        align-self: flex-start;
+        flex-grow: 1;
         max-width: 80ch;
-        margin: auto;
+        margin: 0 auto;
       }
     </style>
   </head>
@@ -29,4 +32,5 @@ const { pageTitle } = Astro.props;
   <div class="page-container">
     <slot />
   </div>
+  <Footer />
 </body>

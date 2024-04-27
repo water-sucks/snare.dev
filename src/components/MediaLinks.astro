@@ -1,0 +1,42 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<div class="icons">
+  <a href="https://github.com/water-sucks">
+    <Icon name="la:github-square" size={32} />
+  </a>
+  <a href="https://matrix.to/#/@water-sucks:matrix.org">
+    <Icon name="mdi:matrix" size={32} />
+  </a>
+  <a href="https://discordapp.com/users/973667298068021378">
+    <Icon name="la:discord" size={32} />
+  </a>
+  <a href="https://reddit.com/user/water-_-sucks">
+    <Icon name="la:reddit-square" size={32} />
+  </a>
+  <a href="mailto:varun@snare.dev">
+    <Icon name="mdi:email-outline" size={32} />
+  </a>
+  <a href="javascript:void(0);">
+    <Icon name="la:rss-square" size={32} />
+  </a>
+</div>
+
+<style>
+  .icons {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    justify-content: center;
+    padding-bottom: 1em;
+  }
+
+  .icons a {
+    color: #a26b35;
+  }
+
+  .icons a:hover {
+    color: #ff7a7a;
+  }
+</style>
