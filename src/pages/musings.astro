@@ -2,7 +2,21 @@
 import Layout from '@layouts/Layout.astro';
 import PostPreviewCard from '@components/PostPreviewCard.astro';
 
-const posts = await Astro.glob('./musings/*.mdx');
+interface Frontmatter {
+  layout: string;
+  title: string;
+  date: string;
+  description: string;
+  author: string;
+  timeToRead: string;
+  image: {
+    url: string;
+    alt: string;
+  };
+  tags: Array<string>;
+}
+
+const posts = await Astro.glob<Frontmatter>('./musings/*.mdx');
 posts.sort(
   (a, b) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date),
 );

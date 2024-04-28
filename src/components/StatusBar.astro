@@ -1,0 +1,106 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const currentPath = Astro.url.pathname;
+
+let routeName = '';
+if (currentPath === '/') {
+  routeName = 'home.html';
+} else if (currentPath === '/about') {
+  routeName = 'about.html';
+} else if (currentPath === '/musings/' || currentPath === '/musings') {
+  routeName = 'musings.html';
+} else if (currentPath.startsWith('/musings/')) {
+  routeName = `${currentPath.substring(9).replaceAll('/', '')}.md`;
+}
+---
+
+<div id="status-bar">
+  <div class="left">
+    <div class="end-space"></div>
+    <Icon name="mdi:music-note" id="cool-icon" />
+    <div id="route-name">{routeName}</div>
+    <div id="scroll-percentage" class="scroll-percentage">0%</div>
+  </div>
+  <div class="center"></div>
+  <div class="right">
+    <div class="static-dummy-prop">UTF-8</div>
+    <div class="static-dummy-prop">UNIX</div>
+    <div id="branch">
+      <Icon name="mdi:pine-tree" />
+      {import.meta.env.MODE}
+    </div>
+    <div class="end-space"></div>
+  </div>
+</div>
+<style>
+  #status-bar {
+    display: flex;
+    height: 1.5em;
+    font-size: 1em;
+    background-color: #121212;
+    justify-content: space-between;
+    align-items: center;
+    bottom: 0px;
+    position: fixed;
+    width: 100%;
+  }
+
+  .end-space {
+    width: 0.7em;
+    height: 1.5em;
+    background-color: #888888;
+  }
+
+  .left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1em;
+  }
+
+  .right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1em;
+  }
+
+  #cool-icon {
+    color: #6d0011;
+  }
+
+  #route-name {
+    color: #ff7979;
+    padding: 0.5em;
+  }
+
+  .static-dummy-prop {
+    color: #9e4244;
+  }
+
+  #branch {
+    display: flex;
+    align-items: center;
+    color: #a26b35;
+  }
+</style>
+
+<script>
+  function getScrollPercent() {
+    const h = document.documentElement;
+    const b = document.body;
+    const st = 'scrollTop';
+    const sh = 'scrollHeight';
+    return ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100;
+  }
+
+  const scrollPercentElement = document.getElementById('scroll-percentage');
+
+  window.addEventListener('scroll', () => {
+    const percentage = getScrollPercent();
+    if (scrollPercentElement) {
+      scrollPercentElement.textContent = `${Math.round(percentage)}%`;
+    }
+  });
+</script>
