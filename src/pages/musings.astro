@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import PostPreviewCard from '@components/PostPreviewCard.astro';
+import { Icon } from 'astro-icon/components';
+import { format } from 'date-fns';
 import type { Frontmatter } from '@types';
 
 const posts = await Astro.glob<Frontmatter>('./musings/*.mdx');
@@ -31,19 +32,28 @@ posts.sort(
     Also some fun, random content for those that are stuck in this cycle of
     seeking knowledge.
   </p>
-  <div class="grid-container" id="cards">
+  <br />
+  <div id="posts">
     {
       posts.map((post) => {
-        const { title, image, description, date } = post.frontmatter;
+        const { title, description, date } = post.frontmatter;
 
         return (
-          <PostPreviewCard
-            {title}
-            url={post.url}
-            image={image.url}
-            {description}
-            {date}
-          />
+          <div>
+            <div class="post">
+              <span class="post-title">
+                <a href={post.url}>{title}</a>
+              </span>
+              <div class="post-date-section">
+                <Icon name="la:calendar" />
+                <span class="post-date">
+                  <i>{format(date, 'PPP')}</i>
+                </span>
+              </div>
+              <span class="post-description">{description}</span>
+            </div>
+            <hr />
+          </div>
         );
       })
     }
@@ -51,13 +61,8 @@ posts.sort(
 </Layout>
 
 <style>
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-  }
-
   .typed {
+    color: #6d0011;
     overflow: hidden;
     white-space: nowrap;
     width: 0;
@@ -74,5 +79,27 @@ posts.sort(
     to {
       width: 100%;
     }
+  }
+
+  #posts {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+  }
+
+  .post {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-date-section {
+    display: flex;
+    align-items: center;
+    color: #f0883e;
+    gap: 0.5em;
+  }
+
+  .post-description {
+    color: #888888;
   }
 </style>
