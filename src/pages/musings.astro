@@ -1,20 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import PostPreviewCard from '@components/PostPreviewCard.astro';
-
-interface Frontmatter {
-  layout: string;
-  title: string;
-  date: string;
-  description: string;
-  author: string;
-  timeToRead: string;
-  image: {
-    url: string;
-    alt: string;
-  };
-  tags: Array<string>;
-}
+import type { Frontmatter } from '@types';
 
 const posts = await Astro.glob<Frontmatter>('./musings/*.mdx');
 posts.sort(
@@ -22,7 +9,10 @@ posts.sort(
 );
 ---
 
-<Layout pageTitle="Musings">
+<Layout
+  title="Musings | Varun Narravula"
+  description="I seek to be free from the concept of meaning, to carve my own reality."
+>
   <h1>Musings</h1>
 
   <blockquote class="typed">

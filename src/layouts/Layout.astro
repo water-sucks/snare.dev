@@ -3,11 +3,21 @@ import '@styles/global.css';
 import '@fontsource/ibm-plex-mono';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
+import { SEO } from 'astro-seo';
+import { formatISO } from 'date-fns';
 
 type Props = {
-  pageTitle: string;
+  title: string;
+  description?: string;
+  type?: string;
+  image?: string;
+  date?: Date;
+  enableOpengraph?: boolean;
 };
-const { pageTitle } = Astro.props;
+
+const defaultImage = 'https://i.ytimg.com/vi/W3qq64HxACo/maxresdefault.jpg';
+
+const { title, description, type, image, date, enableOpengraph } = Astro.props;
 ---
 
 <html lang="en">
@@ -17,7 +27,41 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <title>{pageTitle} | Varun Narravula</title>
+    <title>{title} | Varun Narravula</title>
+    <SEO
+      {title}
+      {description}
+      charset="utf-8"
+      openGraph={enableOpengraph ?
+        {
+          basic: {
+            title,
+            type: type || 'A generic type.',
+            image: image || defaultImage,
+          },
+          article: {
+            authors: ['Varun Narravula'], // Who else? Lmao.
+            publishedTime: formatISO(date || new Date()),
+          },
+        }
+      : undefined}
+      extend={{
+        link: [{ rel: 'icon', href: '/favicon.svg' }],
+        meta: [
+          {
+            name: 'twitter:image',
+            content: image || defaultImage,
+          },
+          { name: 'twitter:title', content: title },
+          {
+            name: 'twitter:description',
+            content:
+              description ||
+              'A generic description. What else do you want me to put here, a dinosaur?',
+          },
+        ],
+      }}
+    />
     <style>
       .page-container {
         align-self: flex-start;

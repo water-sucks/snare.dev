@@ -5,12 +5,12 @@ import Layout from '@layouts/Layout.astro';
 import { format } from 'date-fns';
 
 const { frontmatter } = Astro.props;
-const { title, date, tags, timeToRead, image } = frontmatter;
+const { title, description, date, tags, timeToRead, image } = frontmatter;
 
 const formattedDate = format(new Date(date), 'PPP');
 ---
 
-<Layout pageTitle={title}>
+<Layout {title} {description} {date} {image} enableOpengraph>
   <div class="page-container">
     <main>
       <h1>{title}</h1>
