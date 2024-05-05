@@ -1,0 +1,28 @@
+---
+import Layout from '@layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
+---
+
+<Layout
+  title="Damn, what happened?"
+  description="404 Not Found. Nothing to be seen here."
+>
+  <div class="page-container">
+    <h1>Damn, what happened?</h1>
+    <Icon name="mdi:grave-stone" size={88} />
+    <h2>Nothing to be seen here. Sorry.</h2>
+    <p>Perhaps you meant to find your way <a href="/">home</a> instead?</p>
+  </div>
+</Layout>
+
+<style>
+  .page-container {
+    font-size: 1.5em;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+</style>

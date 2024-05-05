@@ -6,12 +6,14 @@ const currentPath = Astro.url.pathname;
 let routeName = '';
 if (currentPath === '/') {
   routeName = 'home.html';
-} else if (currentPath === '/about') {
+} else if (currentPath === '/about' || currentPath === '/about/') {
   routeName = 'about.html';
 } else if (currentPath === '/musings/' || currentPath === '/musings') {
   routeName = 'musings.html';
 } else if (currentPath.startsWith('/musings/')) {
   routeName = `${currentPath.substring(9).replaceAll('/', '')}.md`;
+} else {
+  routeName = '404.html';
 }
 ---
 
