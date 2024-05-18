@@ -6,4 +6,5 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://snare.dev',
   integrations: [mdx(), icon(), sitemap()],
+  trailingSlash: 'never',
 });
