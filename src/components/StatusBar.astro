@@ -11,7 +11,7 @@ if (currentPath === '/') {
 } else if (currentPath === '/musings/' || currentPath === '/musings') {
   routeName = 'musings.html';
 } else if (currentPath.startsWith('/musings/')) {
-  routeName = `${currentPath.substring(9).replaceAll('/', '')}.md`;
+  routeName = `${currentPath.substring(9).replaceAll('/', '')}` + '.html';
 } else {
   routeName = '404.html';
 }
@@ -20,7 +20,7 @@ if (currentPath === '/') {
 <div id="status-bar">
   <div class="left">
     <div class="end-space"></div>
-    <Icon name="mdi:music-note" id="cool-icon" />
+    <Icon name="mdi:hashtag" id="cool-icon" />
     <div id="route-name">{routeName}</div>
     <div id="scroll-percentage" class="scroll-percentage">0%</div>
   </div>
@@ -74,7 +74,6 @@ if (currentPath === '/') {
 
   #route-name {
     color: #ff7979;
-    padding: 0.5em;
   }
 
   .static-dummy-prop {

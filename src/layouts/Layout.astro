@@ -15,7 +15,8 @@ type Props = {
   enableOpengraph?: boolean;
 };
 
-const defaultImage = 'https://i.ytimg.com/vi/W3qq64HxACo/maxresdefault.jpg';
+const defaultImage = `${new URL('/null.png', Astro.url)}`;
+console.log(defaultImage);
 
 const { title, description, type, image, date, enableOpengraph } = Astro.props;
 ---
@@ -23,7 +24,7 @@ const { title, description, type, image, date, enableOpengraph } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -46,7 +47,7 @@ const { title, description, type, image, date, enableOpengraph } = Astro.props;
         }
       : undefined}
       extend={{
-        link: [{ rel: 'icon', href: '/favicon.svg' }],
+        link: [{ rel: 'icon', href: '/favicon.png' }],
         meta: [
           {
             name: 'twitter:image',

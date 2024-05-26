@@ -3,14 +3,21 @@ import '@styles/global.css';
 import '@fontsource/ibm-plex-mono';
 import Layout from '@layouts/Layout.astro';
 import { format } from 'date-fns';
+import type { CollectionEntry } from 'astro:content';
 
-const { frontmatter } = Astro.props;
-const { title, description, date, tags, timeToRead, image } = frontmatter;
+export interface Props {
+  post: CollectionEntry<'musings'>;
+}
+
+const { post } = Astro.props;
+const { title, description, date, tags, timeToRead, image } = post.data;
 
 const formattedDate = format(new Date(date), 'PPP');
+
+const { Content } = await post.render();
 ---
 
-<Layout {title} {description} {date} {image} enableOpengraph>
+<Layout {title} {description} date={new Date(date)} image={''} enableOpengraph>
   <div class="page-container">
     <main>
       <h1>{title}</h1>
@@ -21,7 +28,7 @@ const formattedDate = format(new Date(date), 'PPP');
       </div>
       <img class="top-image" src={image.url} alt={image.alt} />
       <hr />
-      <slot />
+      <Content />
     </main>
   </div>
 </Layout>
