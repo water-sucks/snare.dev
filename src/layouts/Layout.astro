@@ -78,11 +78,11 @@ const { title, description, type, image, date, enableOpengraph } = Astro.props;
       }
     </style>
   </head>
+  <body>
+    <Header />
+    <div class="page-container">
+      <slot />
+    </div>
+    <Footer />
+  </body>
 </html>
-<body>
-  <Header />
-  <div class="page-container">
-    <slot />
-  </div>
-  <Footer />
-</body>
