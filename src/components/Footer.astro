@@ -1,7 +1,13 @@
 ---
 import MediaLinks from './MediaLinks.astro';
 import StatusBar from './StatusBar.astro';
+
+export interface Props {
+  pageType: string;
+}
+
+const { pageType } = Astro.props;
 ---
 
 <MediaLinks />
-<StatusBar />
+<StatusBar {pageType} />

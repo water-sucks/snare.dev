@@ -17,7 +17,14 @@ const formattedDate = format(new Date(date), 'PPP');
 const { Content } = await post.render();
 ---
 
-<Layout {title} {description} date={new Date(date)} image={''} enableOpengraph>
+<Layout
+  {title}
+  {description}
+  date={new Date(date)}
+  image={''}
+  enableOpengraph
+  pageType={post.slug}
+>
   <div class="page-container">
     <main>
       <h1>{title}</h1>
