@@ -35,21 +35,26 @@ posts.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
   <div id="posts">
     {
       posts.map((post) => {
-        const { title, description, date } = post.data;
+        const { title, description, date, image } = post.data;
 
         return (
-          <div>
+          <div class="post-row">
             <div class="post">
-              <span class="post-title">
-                <a href={`/musings/${post.slug}`}>{title}</a>
-              </span>
-              <div class="post-date-section">
-                <Icon name="la:calendar" />
-                <span class="post-date">
-                  <i>{format(date, 'PPP')}</i>
+              <div class="post-details">
+                <span class="post-title">
+                  <a href={`/musings/${post.slug}`}>{title}</a>
                 </span>
+                <div class="post-date-section">
+                  <Icon name="la:calendar" />
+                  <span class="post-date">
+                    <i>{format(date, 'PPP')}</i>
+                  </span>
+                </div>
+                <span class="post-description">{description}</span>
               </div>
-              <span class="post-description">{description}</span>
+              <div class="post-preview-image">
+                <img src={image.url} alt={image.alt} height={50} />
+              </div>
             </div>
             <hr />
           </div>
@@ -87,6 +92,12 @@ posts.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
   }
 
   .post {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .post-details {
     display: flex;
     flex-direction: column;
   }
