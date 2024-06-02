@@ -14,7 +14,6 @@ export const GET: APIRoute = async (context) => {
     description: 'A random man, on a journey of seeking knowledge',
     site: context.site || 'https://snare.dev',
     trailingSlash: false,
-    stylesheet: '/styles/rss.xsl',
     items: musings.map(({ body, data, slug }) => ({
       content: sanitizeHtml(parser.render(body), {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
@@ -24,7 +23,7 @@ export const GET: APIRoute = async (context) => {
       description: data.description,
       link: `/musings/${slug}`,
       customData: `
-        <media:content url="${data.image.url}" medium="image" />
+        <media:content xmlns:media="http://search.yahoo.com/mrss" url="${data.image.url}" medium="image" />
       `,
     })),
   });
