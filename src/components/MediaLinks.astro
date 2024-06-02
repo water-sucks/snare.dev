@@ -3,24 +3,41 @@ import { Icon } from 'astro-icon/components';
 ---
 
 <div class="icons">
-  <a href="https://github.com/water-sucks">
-    <Icon name="la:github-square" size={32} />
-  </a>
-  <a href="https://matrix.to/#/@water-sucks:matrix.org">
-    <Icon name="mdi:matrix" size={32} />
-  </a>
-  <a href="https://discordapp.com/users/973667298068021378">
-    <Icon name="la:discord" size={32} />
-  </a>
-  <a href="https://reddit.com/user/water-_-sucks">
-    <Icon name="la:reddit-square" size={32} />
-  </a>
-  <a href="mailto:varun@snare.dev">
-    <Icon name="mdi:email-outline" size={32} />
-  </a>
-  <a href="/rss.xml">
-    <Icon name="la:rss-square" size={32} />
-  </a>
+  <span class="tooltip" data-title="GitHub">
+    <a href="https://github.com/water-sucks">
+      <Icon name="la:github-square" size={32} />
+    </a>
+  </span>
+
+  <span class="tooltip" data-title="Matrix">
+    <a href="https://matrix.to/#/@water-sucks:matrix.org">
+      <Icon name="mdi:matrix" size={32} />
+    </a>
+  </span>
+
+  <span class="tooltip" data-title="Discord">
+    <a href="https://discordapp.com/users/973667298068021378">
+      <Icon name="la:discord" size={32} />
+    </a>
+  </span>
+
+  <span class="tooltip" data-title="Reddit">
+    <a href="https://reddit.com/user/water-_-sucks">
+      <Icon name="la:reddit-square" size={32} />
+    </a>
+  </span>
+
+  <span class="tooltip" data-title="Email">
+    <a href="mailto:varun@snare.dev">
+      <Icon name="mdi:email-outline" size={32} />
+    </a>
+  </span>
+
+  <span class="tooltip" data-title="RSS">
+    <a href="/rss.xml">
+      <Icon name="la:rss-square" size={32} />
+    </a>
+  </span>
 </div>
 
 <style>
@@ -38,5 +55,25 @@ import { Icon } from 'astro-icon/components';
 
   .icons a:hover {
     color: #ff7a7a;
+  }
+
+  .tooltip {
+    display: inline;
+    position: relative;
+  }
+
+  .tooltip:hover:after {
+    background: #121212;
+    bottom: 3em;
+    content: attr(data-title);
+    text-decoration: none;
+    padding: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+  }
+
+  .tooltip:hover:before {
+    content: '';
   }
 </style>
