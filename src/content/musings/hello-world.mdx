@@ -5,10 +5,12 @@ description: 'Are things working?'
 author: 'Varun Narravula'
 timeToRead: 1 minute
 image:
-    url: 'https://i.redd.it/x891ae81g3b71.png'
+    url: '/src/assets/this-is-fine.png'
     alt: 'The "This is fine" dog with everything around it on fire meme'
 tags: ['hello', 'blog']
 ---
+
+import PostImage from '@components/PostImage.astro';
 
 This is mostly a test to see if things are working. If things aren't working,
 something is horribly wrong, so send me a message! Of course, I want people to
@@ -62,6 +64,6 @@ bored?
 
 Do something better with yourself, haha.
 
-![Yoshi dying](https://i.pinimg.com/originals/5f/2a/a7/5f2aa75c6dbb75d8bd232e727e514071.gif)
+<PostImage name="yoshi-ded.gif" alt="Yoshi falling down slope" />
 
 Fin.
