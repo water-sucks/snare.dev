@@ -1,6 +1,6 @@
 ---
 import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
+import { Image as AstroImage } from 'astro:assets';
 
 interface Props {
   name: string;
@@ -27,7 +27,7 @@ if (!images[imagePath]) {
 <!-- This is a MDX component. Use inline styles, or they won't
 be bundled properly. -->
 <figure style="text-align: center;">
-  <Image src={images[imagePath]()} {alt} {width} {height} />
+  <AstroImage src={images[imagePath]()} {alt} {width} {height} />
   {
     caption ?
       <u>
