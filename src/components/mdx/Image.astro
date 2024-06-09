@@ -5,10 +5,12 @@ import { Image } from 'astro:assets';
 interface Props {
   name: string;
   alt: string;
-  caption: string;
+  caption?: string;
+  width?: number;
+  height?: number;
 }
 
-const { name, alt } = Astro.props;
+const { name, alt, caption, width, height } = Astro.props;
 
 const images = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/*.{jpeg,jpg,png,gif}',
@@ -22,6 +24,17 @@ if (!images[imagePath]) {
 }
 ---
 
+<!-- This is a MDX component. Use inline styles, or they won't
+be bundled properly. -->
 <figure style="text-align: center;">
-  <Image src={images[imagePath]()} {alt} />
+  <Image src={images[imagePath]()} {alt} {width} {height} />
+  {
+    caption ?
+      <u>
+        <i>
+          <figcaption>{caption}</figcaption>
+        </i>
+      </u>
+    : null
+  }
 </figure>

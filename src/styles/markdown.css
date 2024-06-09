@@ -1,0 +1,9 @@
+main > h2 {
+  color: #a26b35;
+}
+
+blockquote > p {
+  color: #888888;
+  text-align: center;
+  font-style: italic;
+}
