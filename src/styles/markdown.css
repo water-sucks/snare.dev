@@ -1,4 +1,9 @@
-main > h2 {
+main h1 {
+  color: #6d0011;
+  text-align: center;
+}
+
+main h2 {
   color: #a26b35;
 }
 
