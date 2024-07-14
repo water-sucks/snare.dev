@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import icon from 'astro-icon';
 import sitemap from '@astrojs/sitemap';
+import darkroseSyntaxTheme from './src/styles/syntaxTheme.json';
 
 export default defineConfig({
   site: 'https://snare.dev',
@@ -9,5 +10,10 @@ export default defineConfig({
   trailingSlash: 'never',
   build: {
     format: 'file',
+  },
+  markdown: {
+    shikiConfig: {
+      theme: darkroseSyntaxTheme,
+    },
   },
 });
