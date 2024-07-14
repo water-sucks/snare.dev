@@ -24,8 +24,9 @@ const currentPath = Astro.url.pathname;
 </div>
 
 <div>
-  <a href="/about" class={currentPath === '/about' ? 'active-link' : 'link'}
-    >About</a
+  <a
+    href="/about"
+    class={currentPath.startsWith('/about') ? 'active-link' : 'link'}>About</a
   >
   <a
     href="/musings"
