@@ -1,10 +1,25 @@
 main h1 {
   color: #6d0011;
-  text-align: center;
 }
 
 main h2 {
   color: #a26b35;
+}
+
+main h3 {
+  color: #8b2950;
+}
+
+main h4 {
+  color: #b76e79;
+}
+
+main h5 {
+  color: #ff7979;
+}
+
+main h6 {
+  color: #f6a6a7;
 }
 
 blockquote > p {

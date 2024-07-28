@@ -7,11 +7,7 @@ import Layout from '@layouts/Layout.astro';
   description="Varun Narravula's personal website. I'm just a dude who's aspiring, and (kinda) achieving."
   pageType="home"
 >
-  <div class="wrapper">
-    <div class="typed">
-      <h1>Hello, I'm Varun!</h1>
-    </div>
-  </div>
+  <h1>Hello, I'm Varun!</h1>
   <p>I'm just a dude who's aspiring, and (kinda) achieving.</p>
   <p>
     Check out my musings <a href="/musings">here</a>, or maybe see
@@ -26,28 +22,3 @@ import Layout from '@layouts/Layout.astro';
     is up for grabs.
   </p>
 </Layout>
-
-<style>
-  .typed {
-    width: 37ch;
-    height: 5em;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 3px solid #c9c1ca;
-    animation:
-      typing 2s steps(22),
-      blink 0.5s step-end infinite alternate;
-  }
-
-  @keyframes typing {
-    from {
-      width: 0;
-    }
-  }
-
-  @keyframes blink {
-    50% {
-      border-color: transparent;
-    }
-  }
-</style>

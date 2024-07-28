@@ -15,10 +15,8 @@ posts.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
 >
   <h1>Musings</h1>
 
-  <blockquote class="typed">
-    <i>
-      I seek to be free from the concept of meaning, to carve my own reality.
-    </i>
+  <blockquote class="subtitle-quote">
+    I seek to be free from the concept of meaning, to carve my own reality.
   </blockquote>
   <p>
     These are my musings, my reflections on life. I love philosophy, and seek to
@@ -65,24 +63,9 @@ posts.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
 </Layout>
 
 <style>
-  .typed {
-    color: #6d0011;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 0;
-    animation: typing;
-    animation-duration: 2s;
-    animation-timing-function: steps(30, end);
-    animation-fill-mode: forwards;
-  }
-
-  @keyframes typing {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
-    }
+  .subtitle-quote {
+    color: #a26b35;
+    font-style: italic;
   }
 
   #posts {

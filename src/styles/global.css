@@ -12,6 +12,11 @@ body {
   height: 100vh;
 }
 
+h1 {
+  text-align: center;
+  color: #6d0011;
+}
+
 a {
   color: #ff7979;
   text-decoration: none;
