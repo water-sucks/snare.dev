@@ -12,14 +12,12 @@ type Props = {
   type?: string;
   image?: string;
   date?: Date;
-  enableOpengraph?: boolean;
   pageType: string;
 };
 
 const defaultImage = `${new URL('/schisma.png', Astro.url)}`;
 
-const { title, description, type, image, date, enableOpengraph, pageType } =
-  Astro.props;
+const { title, description, type, image, date, pageType } = Astro.props;
 ---
 
 <html lang="en">
@@ -40,19 +38,17 @@ const { title, description, type, image, date, enableOpengraph, pageType } =
       {title}
       {description}
       charset="utf-8"
-      openGraph={enableOpengraph ?
-        {
-          basic: {
-            title,
-            type: type || 'A generic type.',
-            image: image || defaultImage,
-          },
-          article: {
-            authors: ['Varun Narravula'], // Who else? Lmao.
-            publishedTime: formatISO(date || new Date()),
-          },
-        }
-      : undefined}
+      openGraph={{
+        basic: {
+          title,
+          type: type || 'A generic type.',
+          image: image || defaultImage,
+        },
+        article: {
+          authors: ['Varun Narravula'], // Who else? Lmao.
+          publishedTime: formatISO(date || new Date()),
+        },
+      }}
       extend={{
         link: [{ rel: 'icon', href: '/schisma.png' }],
         meta: [
