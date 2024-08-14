@@ -1,0 +1,336 @@
+---
+title: 'Zig Comptime Is Absurdly Cool'
+date: 2024/08/13
+description:
+  "A little snippet of raving over Zig's metaprogramming capabilities"
+author: 'Varun Narravula'
+timeToRead: 8-10 minutes
+image:
+  url: '/assets/ziggy.svg'
+  alt: 'Zig mascot, named Ziggy'
+tags: ['programming', 'zig']
+---
+
+## Part 0 :: Synopsis
+
+You may have heard of [Zig](https://ziglang.org), a new (-ish?) systems
+programming language. It markets itself as being extremely simple, and its
+mission is to create a language where there is one obvious way to do things.
+Quite possibly the antithesis to C++ in its pursuit of simplicity.
+
+I've been using it to write my own
+[CLI replacement for NixOS tools](https://github.com/water-sucks/nixos), named
+`nixos` (boring, perhaps, but gets the job done). It's been a pleasure thus far,
+despite the lack of an extant ecosystem for dependencies like Rust or Go. It's
+forced me to solve problems that I would have otherwise reached out to
+dependencies for, and overall is making me better at software. I'll probably
+save the personal glazing for another post, though.
+
+## Part I :: `comptime`
+
+Compile-time semantics can be pretty hard to grok. More often than not, most
+languages that have some form of a strong type system will force you to learn
+the intricacies and limitations of said type system.
+
+This is one of the biggest features that Zig has to offer: clear compile-time
+semantics without the usage of macros, code gen, or a weird in-between language
+like C++ templates. I use the word "language" liberally here; if we define
+language as a signal-based mechanism for communication, then C++ templates can
+quite possibly be the poorest way of expressing this concept[^templates]. But I
+digress.
+
+`comptime` in Zig is just a way of running normal Zig code at compile time.
+There's no other language to understand, no preprocessor to fight with, just Zig
+code that runs when you run `zig build`. Basically, anywhere that requires a
+value be known at compile time (array sizes, types, etc.), you can pass a
+`comptime` value, and it should just work. This makes it extremely simple to do
+things like use types as normal values, reflection, generics, and many more
+features that are available only in higher-level programming languages or in
+lower-level languages with macros. Additionally, it's much easier to read and
+write since LSP autocomplete exists already (it's normal Zig code, after all).
+
+Take for example the following piece of code:
+
+```zig
+pub fn runtimeOnlyDiv(comptime T: type, a: T, b: T) T {
+  if (T == comptime_int or T == comptime_float) {
+    @compileError("you big dumb dumb, don't use comptime values in this function!")
+  }
+  return a / b;
+}
+```
+
+This allows one to divide numbers with this function, while restricting
+`comptime` types from being passed to the function. While being quite
+superfluous (like what the fuck would you even use this for?), this demonstrates
+the fact that types are values at compile-time, and can thus be operated on like
+any other value within that context. In fact, this is exactly how the
+`ArrayList` data structure is implemented!
+
+```zig
+pub fn ArrayList(comptime T: type) type {
+  return ArrayListAligned(T, null);
+}
+```
+
+A function that returns a type! How can this be? Well, an `ArrayList` is just a
+struct under the hood with the given type as its field. This function can be
+placed anywhere a type is expected, since it returns a type, and Zig will
+evaluate this so that it fills in the correct type. This is called
+[monomorphization](https://en.wikipedia.org/wiki/Monomorphization), and is more
+or less what C++ and Rust do with their templates and traits, but expressed as a
+simple function! I vastly prefer this form of generics over C++ and Rust since
+it reads much simpler to me. I don't have to rip my brains out to understand it.
+
+A trippy result of this is that even parameter types can be expressions that
+generate types!
+
+```zig
+pub fn set(self: Self, comptime T: ValueType, context: NixContext, value: (switch (T) {
+  .int => i64,
+  .float => f64,
+  .bool => bool,
+  .string, .path => [:0]const u8,
+  .null => @TypeOf(null),
+  .list => Value,
+  else => @compileError("type '" ++ @tagName(T) ++ "' cannot be used for the set method"),
+})) !void {
+  const err = switch (T) {
+    .int => libnix.nix_set_int(context.context, self.value, value),
+    .float => libnix.nix_set_float(context.context, self.value, value),
+    .bool => libnix.nix_set_bool(context.context, self.value, value),
+    .string => libnix.nix_set_string(context.context, self.value, value),
+    .path => libnix.nix_set_path_string(context.context, self.value, value),
+    .null => libnix.nix_set_null(context.context, self.value),
+    else => @panic("value cannot be of type " ++ @typeName(@TypeOf(value))),
+  };
+  if (err != 0) return nixError(err);
+}
+```
+
+Even if you've never read Zig before, this is probably decently easy to read if
+you are somewhat proficient in programming.
+
+Well, where does this really show its beauty? Generics, sure, but what about
+anything else? Well, I mentioned `comptime` can also be a solution for
+compile-time reflection that does not involve macros or code gen.
+
+## Part II :: The Situation
+
+In my `nixos` CLI, I have a `Config` struct that is filled in from a TOML
+configuration file. It looks like this:
+
+```zig
+pub const Config = struct {
+  apply: struct {
+    imply_impure_with_tag: bool = false,
+    specialisation: ?[]const u8 = null,
+    use_nom: bool = false,
+  } = .{},
+  config_location: []const u8 = "/etc/nixos",
+  enter: struct {
+    mount_resolv_conf: bool = true,
+  } = .{},
+  init: struct {
+    enable_xserver: bool = false,
+    desktop_config: ?[]const u8 = null,
+    extra_config: ?[]const u8 = null,
+  } = .{},
+  no_confirm: bool = false,
+  use_nvd: bool = false,
+};
+```
+
+Nothing too crazy, just a struct with some values. I left out some more complex
+types for the sake of simplicity.
+
+A cool feature that I wanted to implement is setting configuration values using
+command-line arguments. `git` does this, where an invocation like
+`git -c commit.gpgsign=false commit`, will disable GPG signing for just that one
+invocation when committing your code. This enables flexibility for when
+misconfigurations happen with your GPG key, and you just want to create an
+unsigned commit without changing your configuration.
+
+However, Git has a ton of options. Just tab through with `git -c` in `zsh`, and
+you get this:
+
+```sh
+$ git -c
+zsh: do you wish to see all 621 possibilities (69 lines)?
+```
+
+Oh, hell no. _There's no way `git` parsed those options manually_, I thought to
+myself. That 69 is just the number of top-level `git` options! The number of
+options in my `Config` struct seemed like they would only grow and get more
+nested. I don't want to keep going back to that every time a setting is added!
+
+I thought about how to solve this for a while. Then, all of a sudden, a
+lightbulb went off in my head. I could just use compile-time reflection to
+traverse the struct fields given a path.
+
+The result:
+
+```zig
+fn setFieldValue(comptime T: type, path: []const u8, value: []const u8, ptr: *T) !void {
+  switch (@typeInfo(T)) {
+    .Struct => |structInfo| {
+      inline for (structInfo.fields) |field| {
+        if (std.mem.startsWith(u8, path, field.name)) {
+          const rest = path[field.name.len..];
+
+          if (rest.len == 0) {
+            if (field.type == bool) {
+              const parsed = blk: {
+                if (mem.eql(u8, value, "true")) break :blk true;
+                if (mem.eql(u8, value, "false")) break :blk false;
+
+                return error.InvalidBoolean;
+              };
+
+              @field(ptr, field.name) = parsed;
+            } else if (field.type == []const u8 or field.type == ?[]const u8) {
+              if (field.type == ?[]const u8 and value.len == 0) {
+                @field(ptr, field.name) = null;
+              } else {
+                @field(ptr, field.name) = value;
+              }
+
+              return;
+            } else {
+              return error.UnsupportedType;
+            }
+
+            return;
+          } else if (rest[0] == '.') {
+            return setFieldValue(field.type, rest[1..], value, &@field(ptr, field.name));
+          }
+        }
+      } else {
+        return error.NoPathExists;
+      }
+    },
+    else => return,
+  }
+}
+```
+
+If you don't understand this, don't worry! I'll walk you through this.
+
+```zig
+fn setFieldValue(comptime T: type, path: []const u8, value: []const u8, ptr: *T) !void {
+}
+```
+
+These are the parameters:
+
+- `T` :: a type (the type of the struct we want to modify)
+- `path` :: a path to a potentially nested field in the struct, separated by
+  dots (example: `apply.use_nom`)
+- `value` :: the string value from the command line
+- `ptr`: a pointer to the struct value to modify
+
+Cool, right?
+
+```zig
+switch (@typeInfo(T)) {
+  .Struct => |structInfo| {
+    inline for (structInfo.fields) |field| {
+      // ...
+    }
+  },
+  else => return,
+}
+```
+
+This might look weird at first. This just checks if the type provided is a
+struct, and then starts looping over the struct's fields. Each field has certain
+metadata associated with it: a name, the type (which is itself a `comptime`
+value of `type`, and other things) Notice how this is an `inline` for loop; in
+`comptime`, loops are unrolled, since evaluation is strict inside `comptime`
+boundaries, and must terminate. After all, the compiler must strictly evaluate
+all of these values for them to make sense; type information cannot be available
+in the resulting binary.
+
+The `else => return` makes sure to not do anything if the type is not a struct.
+This may be confusing (shouldn't this be a compile error, right?), but I will
+come back to this later.
+
+```zig
+if (std.mem.startsWith(u8, path, field.name)) {
+  const rest = path[field.name.len..];
+  if (rest.len == 0) {
+    // this is a valid config setting, parse and set the value
+    return;
+  } else if (rest[0] == '.') {
+    return setFieldValue(field.type, rest[1..], value, &@field(ptr, field.name));
+  }
+} else {
+  return error.NoPathExists;
+}
+```
+
+This is the real meat; if we have a field that does match the start of the path
+passed in, then we check if there is more. If there is more (aka when there is a
+dot right after the field name), then we _recurse_ into the field where that
+exists. And if there is no dot in that first index, then we just continue on and
+no field matching that will be found. If there is no more (we have reached the
+field we need to modify), then we have reached the field that we want to modify
+and can access it with `@field(ptr, field.name)` in that block with the comment,
+and execution can end once we set the value.
+
+The `else => return` in the `switch` case is required due to this recursion.
+Since the compiler will always hit a case where the nested field is not a struct
+in order to terminate evaluation, we make sure to not emit a `@compileError()`
+in the default case.
+
+```zig
+if (field.type == bool) {
+  const parsed = blk: {
+    if (mem.eql(u8, value, "true")) break :blk true;
+    if (mem.eql(u8, value, "false")) break :blk false;
+
+    return error.InvalidBoolean;
+  };
+
+  @field(ptr, field.name) = parsed;
+} else if (field.type == []const u8 or field.type == ?[]const u8) {
+  if (field.type == ?[]const u8 and value.len == 0) {
+    @field(ptr, field.name) = null;
+  } else {
+    @field(ptr, field.name) = value;
+  }
+
+  return;
+} else {
+  return error.UnsupportedType;
+}
+```
+
+This final snippet runs if the path to the field exists. It checks the field
+type, validates it if needed, and sets the value based on that. Pretty
+self-explanatory code when you read it; it trivially parses booleans for `bool`
+fields, or shoves the value into a string (`[]const u8`) slice, accounting for
+potential empty values by treating them as `null`.
+
+This took an hour to implement. I now had dynamic field-setting code that I
+probably won't have to touch for a good long while as I add more configuration
+options, all because of Zig's `comptime`. At most, I'll just need to add more
+types to check for like integers or dates, if they crop up. Amazing!
+
+## Part III :: Conclusion
+
+What is the point of this post, besides glazing over a programming language like
+every other Rust fanboy out there
+([IYKYK](https://transitiontech.ca/random/RIIR))? The point is that I'm learning
+new things every day, and this is one of those things that just blew my mind
+away, even though I've been using Zig for around a year to this point.
+
+No matter what, there's always new stuff to learn. And Zig is fun to use. Go try
+it out, and keep doing fun shit!
+
+[^templates]:
+    I don't like C++ very much, as you can tell by the tone of this post. It's
+    just not fun for me to read or write. I've only used it for university
+    projects thus far, and I don't really want to fan the flames of the language
+    wars, but it's just my opinion. Don't take it personally. Nix is written in
+    C++, after all, and I love Nix. It is what it is.
