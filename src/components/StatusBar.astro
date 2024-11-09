@@ -15,16 +15,19 @@ const routeName = `${pageType}.html`;
     <div class="end-space"></div>
     <Icon name="mdi:hashtag" id="cool-icon" />
     <div id="route-name">{routeName}</div>
-    <div id="scroll-percentage" class="scroll-percentage">0%</div>
+    <div class="scroll-percentage">0%</div>
   </div>
+
   <div class="center"></div>
+
   <div class="right">
-    <div class="static-dummy-prop">UTF-8</div>
-    <div class="static-dummy-prop">UNIX</div>
-    <div id="branch">
+    <div class="extra-component static-dummy-prop">UTF-8</div>
+    <div class="extra-component static-dummy-prop">UNIX</div>
+    <div id="branch" class="extra-component">
       <Icon name="mdi:pine-tree" />
       {import.meta.env.MODE}
     </div>
+    <div class="extra-component scroll-percentage">0%</div>
     <div class="end-space"></div>
   </div>
 </div>
@@ -78,6 +81,24 @@ const routeName = `${pageType}.html`;
     align-items: center;
     color: #a26b35;
   }
+
+  .extra-component.scroll-percentage {
+    display: none;
+  }
+
+  @media (width <= 80ch) {
+    .left .scroll-percentage {
+      display: none;
+    }
+
+    .extra-component {
+      display: none !important;
+    }
+
+    .extra-component.scroll-percentage {
+      display: block !important;
+    }
+  }
 </style>
 
 <script>
@@ -89,12 +110,13 @@ const routeName = `${pageType}.html`;
     return ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100;
   }
 
-  const scrollPercentElement = document.getElementById('scroll-percentage');
+  const scrollPercentElements =
+    document.getElementsByClassName('scroll-percentage');
 
   window.addEventListener('scroll', () => {
     const percentage = getScrollPercent();
-    if (scrollPercentElement) {
-      scrollPercentElement.textContent = `${Math.round(percentage)}%`;
+    for (let i = 0; i < scrollPercentElements.length; i++) {
+      scrollPercentElements[i].textContent = `${Math.round(percentage)}%`;
     }
   });
 </script>

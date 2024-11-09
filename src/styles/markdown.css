@@ -27,3 +27,7 @@ blockquote > p {
   text-align: center;
   font-style: italic;
 }
+
+.astro-code {
+  overflow-x: scroll;
+}
