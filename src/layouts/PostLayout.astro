@@ -25,19 +25,17 @@ const { Content } = await post.render();
   image={image.url}
   pageType={post.slug}
 >
-  <div class="page-container">
-    <main>
-      <h1>{title}</h1>
-      <div class="metadata-line">
-        {formattedDate} :: {tags.map((tag: string) => `#${tag}`).join(', ')} :: {
-          timeToRead
-        }
-      </div>
-      <img class="top-image" src={image.url} alt={image.alt} />
-      <hr />
-      <Content />
-    </main>
-  </div>
+  <main>
+    <h1>{title}</h1>
+    <div class="metadata-line">
+      {formattedDate} :: {tags.map((tag: string) => `#${tag}`).join(', ')} :: {
+        timeToRead
+      }
+    </div>
+    <img class="top-image" src={image.url} alt={image.alt} />
+    <hr />
+    <Content />
+  </main>
 </Layout>
 
 <style>
