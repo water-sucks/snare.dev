@@ -26,8 +26,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* For Shiki code blocks */
-pre {
-  margin: 0.5rem 0 16px;
-  padding: 1rem 1rem 1rem;
+.expressive-code {
+  padding: 1em 0em;
+  width: 100%;
 }
