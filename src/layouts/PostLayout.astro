@@ -34,7 +34,9 @@ const { Content } = await post.render();
     </div>
     <img class="top-image" src={image.url} alt={image.alt} />
     <hr />
-    <Content />
+    <div class="content">
+      <Content />
+    </div>
   </main>
 </Layout>
 
@@ -44,8 +46,15 @@ const { Content } = await post.render();
     color: #888888;
   }
 
+  .content {
+    max-width: 95%;
+  }
+
   .top-image {
-    width: 100%;
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     padding-top: 1em;
     padding-bottom: 1em;
   }

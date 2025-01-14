@@ -24,10 +24,22 @@ if (!images[imagePath]) {
 }
 ---
 
+<style>
+  .post-image {
+    width: 100%;
+  }
+</style>
+
 <!-- This is a MDX component. Use inline styles, or they won't
 be bundled properly. -->
 <figure style="text-align: center;">
-  <AstroImage src={images[imagePath]()} {alt} {width} {height} />
+  <AstroImage
+    class="post-image"
+    src={images[imagePath]()}
+    {alt}
+    {width}
+    {height}
+  />
   {
     caption ?
       <u>

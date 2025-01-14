@@ -16,4 +16,10 @@ export default defineConfig({
       theme: darkroseSyntaxTheme,
     },
   },
+  image: {
+    experimentalLayout: 'responsive',
+  },
+  experimental: {
+    responsiveImages: true,
+  },
 });
