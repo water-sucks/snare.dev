@@ -15,7 +15,7 @@ type Props = {
   pageType: string;
 };
 
-const defaultImage = `${new URL('/schisma.png', Astro.url)}`;
+const defaultImage = `${new URL('/phoenix.png', Astro.url)}`;
 
 const { title, description, type, image, date, pageType } = Astro.props;
 ---
@@ -23,7 +23,7 @@ const { title, description, type, image, date, pageType } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="/schisma.png" />
+    <link rel="icon" type="image/png" href="/phoenix.png" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -50,7 +50,7 @@ const { title, description, type, image, date, pageType } = Astro.props;
         },
       }}
       extend={{
-        link: [{ rel: 'icon', href: '/schisma.png' }],
+        link: [{ rel: 'icon', href: '/phoenix.png' }],
         meta: [
           {
             name: 'twitter:image',
