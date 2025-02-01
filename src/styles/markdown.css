@@ -30,4 +30,7 @@ blockquote > p {
 
 .astro-code {
   overflow-x: scroll;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
