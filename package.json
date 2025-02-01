@@ -24,7 +24,6 @@
     "astro-icon": "^1.1.0",
     "astro-seo": "^0.8.3",
     "date-fns": "^3.6.0",
-    "markdown-it": "^14.1.0",
     "sanitize-html": "^2.13.0"
   },
   "devDependencies": {
