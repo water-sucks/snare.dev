@@ -2,7 +2,8 @@
 import SimpleFMClient from '@solely/simple-fm';
 import { Icon } from 'astro-icon/components';
 
-const lastFmApiKey = import.meta.env.LASTFM_API_KEY;
+// Muahahahaha, use my API key. I do not care.
+const lastFmApiKey = '009e1588a4c3cadc9c925a4e56d84056';
 let client = new SimpleFMClient(lastFmApiKey);
 const json = await client.user.getRecentTracks({ username: 'water-sucks' });
 
