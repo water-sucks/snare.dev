@@ -1,37 +1,45 @@
 ---
-import SimpleFMClient from '@solely/simple-fm';
 import { Icon } from 'astro-icon/components';
-
-// Muahahahaha, use my API key. I do not care.
-const lastFmApiKey = '009e1588a4c3cadc9c925a4e56d84056';
-let client = new SimpleFMClient(lastFmApiKey);
-const json = await client.user.getRecentTracks({ username: 'water-sucks' });
-
-const playing = json.search.nowPlaying;
-const track = json.tracks[0];
-const { artist, name } = track;
-const artistName = artist!.name;
 ---
 
-{
-  playing && (
-    <div class="lastfm-playing">
-      <Icon name="mdi:music" />
-      <span>
-        {artistName} - {name}
-      </span>
-    </div>
-  )
-}
+<div id="lastfm-playing">
+  <Icon id="lastfm-playing-icon" name="mdi:music" />
+  <span id="song-name"></span>
+</div>
+
+<script>
+  import SimpleFMClient from '@solely/simple-fm';
+
+  // Muahahahaha, use my API key. I do not care.
+  const lastFmApiKey = '009e1588a4c3cadc9c925a4e56d84056';
+  const client = new SimpleFMClient(lastFmApiKey);
+  const json = await client.user.getRecentTracks({ username: 'water-sucks' });
+
+  const playing = json.search.nowPlaying;
+
+  if (playing) {
+    const track = json.tracks[0];
+    const { artist, name } = track;
+    const artistName = artist!.name;
+
+    document.getElementById('lastfm-playing')!.style.display = 'flex';
+    document.getElementById('lastfm-playing-icon')!.style.display = 'flex';
+    document.getElementById('song-name')!.innerHTML = `${artistName} - ${name}`;
+  }
+</script>
 
 <style>
-  .lastfm-playing {
-    display: flex;
+  #lastfm-playing {
+    display: hidden;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 1em;
     color: #b76e79 !important;
     text-align: center;
+  }
+
+  #lastfm-playing-icon {
+    display: none;
   }
 </style>
