@@ -47,6 +47,8 @@ const routeName = `${pageType}.html`;
     bottom: 0px;
     position: fixed;
     width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .end-space {
@@ -64,11 +66,17 @@ const routeName = `${pageType}.html`;
   }
 
   .center {
+    flex: 0 1 auto;
     display: flex;
-    flex: 1;
     justify-content: center;
     align-items: center;
-    gap: 0.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 100px;
+    max-width: calc(100vw - 20em);
+    margin-left: 1em;
+    margin-right: 1em;
   }
 
   .right {
@@ -85,6 +93,9 @@ const routeName = `${pageType}.html`;
 
   #route-name {
     color: #ff7979;
+    overflow: hidden; /* Prevents elements from overflowing */
+    white-space: nowrap; /* Keeps all text in a single line */
+    text-overflow: ellipsis; /* Shows "..." if the content overflows */
   }
 
   .static-dummy-prop {
