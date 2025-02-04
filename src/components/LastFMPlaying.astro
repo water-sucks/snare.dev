@@ -1,0 +1,36 @@
+---
+import SimpleFMClient from '@solely/simple-fm';
+import { Icon } from 'astro-icon/components';
+
+const lastFmApiKey = import.meta.env.LASTFM_API_KEY;
+let client = new SimpleFMClient(lastFmApiKey);
+const json = await client.user.getRecentTracks({ username: 'water-sucks' });
+
+const playing = json.search.nowPlaying;
+const track = json.tracks[0];
+const { artist, name } = track;
+const artistName = artist!.name;
+---
+
+{
+  playing && (
+    <div class="lastfm-playing">
+      <Icon name="mdi:music" />
+      <span>
+        {artistName} - {name}
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .lastfm-playing {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    color: #b76e79 !important;
+    text-align: center;
+  }
+</style>

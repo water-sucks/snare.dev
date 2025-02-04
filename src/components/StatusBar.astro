@@ -1,5 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
+import LastFMPlaying from './LastFMPlaying.astro';
 
 export interface Props {
   pageType: string;
@@ -18,7 +19,11 @@ const routeName = `${pageType}.html`;
     <div class="scroll-percentage">0%</div>
   </div>
 
-  <div class="center"></div>
+  <div class="center">
+    <div class="extra-component">
+      <LastFMPlaying />
+    </div>
+  </div>
 
   <div class="right">
     <div class="extra-component static-dummy-prop">UTF-8</div>
@@ -52,13 +57,23 @@ const routeName = `${pageType}.html`;
 
   .left {
     display: flex;
+    flex: 1;
     justify-content: flex-start;
     align-items: center;
     gap: 1em;
   }
 
+  .center {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+  }
+
   .right {
     display: flex;
+    flex: 1;
     justify-content: flex-end;
     align-items: center;
     gap: 1em;
