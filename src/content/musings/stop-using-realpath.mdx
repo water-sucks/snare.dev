@@ -1,0 +1,312 @@
+---
+title: 'realpath() Considered Harmful'
+date: 2025/04/09
+description: 'Why realpath() is a terrible function'
+author: 'Varun Narravula'
+timeToRead: 25-30 minutes
+image:
+    url: '/assets/realpath-funny.png'
+    alt: 'A fake run of the realpath command'
+tags: ['programming', 'shell', 'zig', 'die']
+---
+
+## Synopsis
+
+Public service announcement for all programmers: **stop using `realpath()`**.
+The C function `realpath(3)` included in C standard library on most Unix-like
+operating systems, whatever equivalent there is for your programming language,
+just don't use it in code in general[^scripts].
+
+But why?
+
+## Part I :: Where Did This Begin?
+
+I stated down a rabbit hole of research on `realpath()` and its various
+incarnations when I ran into a bizarre problem while working on my reimagined
+[NixOS CLI utility](https://github.com/water-sucks/nixos). This is a rewrite of
+various assorted scripts throughout the NixOS ecosystem in Zig[^rewrite], and
+these scripts often relied on the usage of absolute paths in order to function.
+I didn't question this until I found out that my invocations of
+`std.fs.realpath()` were causing an instance of
+[detectable illegal behavior](https://ziglang.org/documentation/0.14.0/#toc-Illegal-Behavior)[^dib]
+that only occurred in `ReleaseSafe` mode, but not in `Debug` mode during
+development.
+
+Interestingly, I have never been able to create a minimally reproducible example
+of this since then; I assume it has been fixed in some fashion. However, that
+doesn't mean that its usage is not harmful. In fact, Zig is strongly considering
+outright [removing this function](https://github.com/ziglang/zig/issues/19353)
+from its standard library[^inspiration]. So, let's research from what depths of
+hell `realpath()` came from.
+
+## Part II :: Abstraction Does Not Mean Portability
+
+`realpath()` is not a portable construct in most places. The system `realpath()`
+will have vastly different behavior depending on how the linked C library
+implements it.
+
+### `glibc` Implementation
+
+Let's investigate how
+[`glibc` implements it](https://sourceware.org/git/?p=glibc.git;a=blob;f=stdlib/canonicalize.c;h=dca6fca5fb76cc51767364821c3ecf0ab534d725;hb=HEAD#l189).
+This is the implementation details, slightly editorialized from the `glibc`
+source code[^editorialized].
+
+```cpp
+// Return the canonical absolute name of file `name`.
+//
+// A canonical absolute name:
+//   - Must be an absolute path.
+//   - Cannot contain any "." nor ".." components
+//   - Does not contain any repeated filename separators ("/") or symbolic
+//     links (symlinks)
+//   - All filename components must exist.
+//
+// Implementation details:
+//   - If `resolved` is NULL, the result is malloc()'ed. Otherwise, if the
+//     canonical name is PATH_MAX chars or more, return NULL with `errno` set
+//     to ENAMETOOLONG.
+//   - If the name fits in fewer than PATH_MAX chars, return the name in
+//     `resolved`.
+//   - If the name cannot be resolved and `resolved` is non-NULL, it contains the
+//     name of the first component that cannot be resolved.
+//   - If the name can be resolved, `resolved` holds the same value as the value
+//     returned.
+
+char* realpath(const char* name, char* resolved)
+```
+
+Already getting into quite a lot of platform-specific details. But hold on;
+Linux has multiple `libc` implementations! What about those?
+
+### `musl` Implementation
+
+On the same system, we have `musl`. How does `musl` implement the same type of
+functionality? The source code is
+[here](https://git.musl-libc.org/cgit/musl/tree/src/misc/realpath.c#n14), but
+this is the summary of the assumptions made and results returned:
+
+```c
+// Resolve a canonical name from a filename.
+//
+// A canonical absolute name:
+//   - Must be an absolute path.
+//   - Cannot contain any `"."` nor `".."` components
+//   - Does not contain any repeated filename separators (`"/"`) or symbolic
+//     links
+//   - Not all filename components and ancestor directories need to exist; only
+//     symlinks need to be resolved to existing places.
+
+char* realpath(const char* restrict filename, char* restrict solved);
+```
+
+Do we see any differences here? Well, yeah! Apparently, two different `libc`
+implementations on the SAME platform will determine if filename components exist
+differently! So `realpath()` now doesn't have an invariant decreeing that
+filenames need to exist if they can be resolved by `realpath()`. Great, now try
+compiling the same application that relies on this supposed `glibc` "invariant"
+for Alpine Linux, and watch as you get `"error: file not exists"` when your
+application should have manually been ensuring their existence after resolution
+anyway. Amazing! **_Not._** That is insanity that can only be resolved by a
+night out drinking your sorrows away at 3:30 in the morning once you run into it
+in a Docker container randomly.
+
+### Other Language Standard Libraries
+
+How do other languages do it then, you may ask? Often times in the WORST fucking
+ways possible.
+
+Take Zig. As new a language as it is, the way that it implements `realpath()` on
+POSIX systems is just _insane_. Here's the
+[source](https://github.com/ziglang/zig/blob/ddcf6fcdf3452a4a7d55a27e7112e794447120b6/lib/std/os.zig#L104),
+for reference, yet again.
+
+I don't even want to give this the time of day, to be frank. It's genuinely that
+bad. Here's a snippet from the relevant code, with portions omitted for brevity.
+
+```zig
+switch (native_os) {
+    .windows => {
+        var wide_buf: [windows.PATH_MAX_WIDE]u16 = undefined;
+        const wide_slice = try windows.GetFinalPathNameByHandle(fd, .{}, wide_buf[0..]);
+        const end_index = std.unicode.wtf16LeToWtf8(out_buffer, wide_slice);
+        return out_buffer[0..end_index];
+    },
+    .macos, .ios, .watchos, .tvos, .visionos => {
+        // On macOS, we can use F.GETPATH fcntl command to query the OS for
+        // the path to the file descriptor.
+        @memset(out_buffer[0..max_path_bytes], 0);
+        switch (posix.errno(posix.system.fcntl(fd, posix.F.GETPATH, out_buffer))) {
+            // ...
+        }
+        // ...
+        const len = mem.indexOfScalar(u8, out_buffer[0..], 0) orelse max_path_bytes;
+        return out_buffer[0..len];
+    },
+    .linux, .serenity => {
+        var procfs_buf: ["/proc/self/fd/-2147483648\x00".len]u8 = undefined;
+        const proc_path = std.fmt.bufPrintZ(procfs_buf[0..], "/proc/self/fd/{d}", .{fd}) catch unreachable;
+        const target = posix.readlinkZ(proc_path, out_buffer) catch |err| {
+            // ...
+        };
+        return target;
+    },
+    .solaris, .illumos => {
+        var procfs_buf: ["/proc/self/path/-2147483648\x00".len]u8 = undefined;
+        const proc_path = std.fmt.bufPrintZ(procfs_buf[0..], "/proc/self/path/{d}", .{fd}) catch unreachable;
+        const target = posix.readlinkZ(proc_path, out_buffer) catch |err| switch (err) {
+            // ...
+        };
+        return target;
+    },
+    .freebsd => {
+        var kfile: std.c.kinfo_file = undefined;
+        kfile.structsize = std.c.KINFO_FILE_SIZE;
+        switch (posix.errno(std.c.fcntl(fd, std.c.F.KINFO, @intFromPtr(&kfile)))) {
+            // ...
+        }
+        // ...
+
+    },
+    .dragonfly => {
+        switch (posix.errno(std.c.fcntl(fd, posix.F.GETPATH, out_buffer))) {
+          // ...
+        }
+        // ...
+    },
+    .netbsd => {
+        @memset(out_buffer[0..max_path_bytes], 0);
+        switch (posix.errno(std.c.fcntl(fd, posix.F.GETPATH, out_buffer))) {
+            // ...
+        }
+        // ...
+    },
+    else => unreachable,
+}
+```
+
+Can you tell what's wrong? The TL;DR: it just gives up and **relies on extremely
+platform-specific ways to retrieve an absolute file path given a file
+descriptor** (`fd`).
+
+_What the fuck???_ Who thought of this monstrosity? Apparently we just don't
+care that file descriptors don't necessarily refer to paths on disk anymore.
+Apparently shared memory and `pipe()` don't exist either. Jesus Christ. Indeed,
+they recognize the error of their ways with the following comment:
+
+> /// Calling this function is usually a bug.
+
+Even _they_ know that this shit is stupid as hell! I mean, just look at the
+implementation for Linux, SerenityOS, and Solaris. They construct a link to
+`/proc/self` for the `fd` in question, and they evaluate the symlinks from
+there. Genuinely disgusting, since it also doesn't necessarily take into account
+higher process `ulimit` values for file descriptors that can overflow the
+buffer. But oh well, who cares? I like my buffer overflows!
+
+At least the other POSIX-compliant OSes use `fnctl()` macros properly, but that
+will always depend on if the underlying OS `libc` will even expose these
+operations. At least for those OSes, their `libc` is the only way to access
+these types of things, so maybe it's a little more consistent, but hello??
+
+So, here's the real question: **_why does `realpath()` even exist????_**
+
+## Part III :: Rationale
+
+There are two primary use cases that I can see for `realpath()` being a
+potentially useful function, at least from looking around on Google at links
+like [this](https://stackoverflow.com/questions/28992329/why-use-realpath):
+
+1. To ensure the existence of a path and that it is resolvable (i.e. no symlink
+   loops)
+2. Displaying the full file path for a given relative path, for clarity in
+   logging and/or displaying.
+3. To prevent
+   [path traversal attacks](https://owasp.org/www-community/attacks/Path_Traversal).
+4. Your software relies on an assumption that the `cwd` is unreliable or can
+   change in certain instances (i.e. going up directories to find the root of a
+   Git repository or a Nix flake).
+
+All of these are potentially useful, but also...they can be achieved in a
+variety of ways that don't need to rely on the underlying operating system for
+any assumptions or assumed invariants.
+
+## Part IV :: What Should I Use, Then?
+
+OK you big baby, you want `realpath()` and you're throwing a big fucking tantrum
+about it. Cry harder.
+
+But really, what should one use in place of `realpath()` then?
+
+To be quite frank, `realpath()` usage can be avoided entirely in most instances.
+How, you may ask? **Just maintain the reference to the filename in the first
+place, first off**. If you are using a language like Zig or Python and are
+trying to call `realpath()` on some sort of `Path`-like data structure, you had
+to have been given a path to the file to call `realpath()` on it in these
+instances. So, why don't you just use that reference? Don't even think about
+reifying a filename given the file descriptor, or I will personally find your
+address and annoy you to hell about it until you damn well stop. That filename
+will have enough context for you to construct the real path to the file in a
+manual fashion, if you so please.
+
+As far as I can tell from reading standard library code from various other
+languages (including the prior `libc` examples), the general way to look for
+canonical paths on _any_ given system given some path is to do the following
+steps:
+
+1. Resolve any `..` and `.` links.
+2. Evaluate any symlinks (and resolve their `.` and `..` references as well) if
+   needed.
+3. Continue doing this until a file path that is not a symlink is reached (it
+   may not necessarily exist, do not assume this is the case ever).
+4. Append the current `cwd` to the path if relative, or leave it alone if it is
+   absolute.
+
+This approach is much more portable. You can use a stack to resolve `.` and `..`
+references and checking for the presence of a prefixed `..` after to prevent
+said path traversal attacks can absolve the usage of `realpath()` entirely in
+most cases. This is especially true when the `cwd` of a process doesn't need to
+change at all.
+
+Who will write this code, you may ask?
+
+_You_. You're smart. You can write this cross-platform path resolution code on
+your own if you need it. Needing to assume absolute paths is a fairly uncommon
+scenario, and to be frank, IMO it should not be a standard library function in
+general because people will end up reaching for it and run into these
+OS-specific footguns. `realpath()` itself is more of an operating
+system-specific construct, and should be treated as such.
+
+I would write this code for an example, but to be honest, I'm lazy. And I also
+try _not_ to rely on `realpath()`-like functionality anymore, and just enforce
+absolute paths whenever I need them, and manually evaluate symlinks if needed.
+Go has a nice, deterministic `EvalSymlinks()` function that does this, so that's
+what I've been resorting to in most of my Go code, and equivalent functions
+elsewhere. Farewell, `realpath()`. Rot in hell.
+
+[^scripts]:
+    I am not quite sure about usage of the `realpath` command in shell scripts.
+    Since shell scripts usually tend to not be as cross-platform as programs
+    written in more general-purpose programming languages, I've found that usage
+    of the `realpath` command can be quite useful when running commands ad-hoc.
+    But I'll come back to this later and add an extra section about it if I
+    change my mind.
+
+[^rewrite]:
+    I'm rewriting this in Go for many reasons. I'll probably end up writing a
+    blog post about this too.
+
+[^dib]:
+    "Detectable illegal behavior" is not quite the term that the Zig community
+    or documentation has solidified on yet, but there is a good amount of
+    discussion on it in a
+    [GitHub issue](https://github.com/ziglang/zig/issues/2402).
+
+[^inspiration]:
+    Thanks to [@matklad](https://github.com/matklad) on the linked GitHub issue
+    for providing the inspiration for really writing a post on this topic in
+    this
+    [comment](https://github.com/ziglang/zig/issues/19353#issuecomment-2006795388).
+
+[^editorialized]:
+    Well, I kinda just took a comment from the source code and I reworded it to
+    make more sense.
