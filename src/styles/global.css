@@ -27,6 +27,11 @@ a:hover {
   text-decoration: underline;
 }
 
+strong {
+  font-weight: 900;
+  color: #ffffff;
+}
+
 /* For Shiki code blocks */
 pre {
   margin: 0.5rem 0 16px;
