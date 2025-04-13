@@ -1,7 +1,7 @@
 html {
   background-color: #000000;
   color: #c9c1c9;
-  font-family: 'IBM Plex Mono', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 body {
@@ -36,4 +36,8 @@ strong {
 pre {
   margin: 0.5rem 0 16px;
   padding: 1rem 1rem 1rem;
+}
+
+input[type='text'] {
+  font-family: 'IBM Plex Mono', monospace;
 }

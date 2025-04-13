@@ -1,11 +1,18 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import { Icon } from 'astro-icon/components';
-import { format } from 'date-fns';
 import { getCollection } from 'astro:content';
+import SearchAndPosts from '@components/SearchPosts.svelte';
 
 const posts = await getCollection('musings');
 posts.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
+
+const preparedPosts = posts.map((post) => ({
+  title: post.data.title,
+  description: post.data.description,
+  date: post.data.date,
+  image: post.data.image,
+  slug: post.slug,
+}));
 ---
 
 <Layout
@@ -30,49 +37,14 @@ posts.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
     seeking knowledge.
   </p>
   <br />
-  <div id="posts">
-    {
-      posts.map((post) => {
-        const { title, description, date, image } = post.data;
 
-        return (
-          <div class="post-row">
-            <div class="post">
-              <div class="post-details">
-                <span class="post-title">
-                  <a href={`/musings/${post.slug}`}>{title}</a>
-                </span>
-                <div class="post-date-section">
-                  <Icon name="la:calendar" />
-                  <span class="post-date">
-                    <i>{format(date, 'PPP')}</i>
-                  </span>
-                </div>
-                <span class="post-description">{description}</span>
-              </div>
-              <div class="post-preview-image">
-                <img src={image.url} alt={image.alt} height={50} />
-              </div>
-            </div>
-            <hr />
-          </div>
-        );
-      })
-    }
-  </div>
+  <SearchAndPosts client:load posts={preparedPosts} />
 </Layout>
 
 <style>
   .subtitle-quote {
     color: #a26b35;
     font-style: italic;
-  }
-
-  #posts {
-    display: flex;
-    flex-direction: column;
-    gap: 2em;
-    padding-bottom: 1em;
   }
 
   .post {
