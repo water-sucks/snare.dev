@@ -12,6 +12,7 @@
       url: string;
       alt: string;
     };
+    tags: Array<string>;
     slug: string;
   };
 
@@ -64,11 +65,14 @@
             <a href={`/musings/${post.slug}`}>{post.title}</a>
           </span>
           <div class="post-date-section">
-            <span class="post-date">
-              <i>{format(new Date(post.date), 'PPP')}</i>
-            </span>
+            <span><i>{format(new Date(post.date), 'PPP')}</i></span>
           </div>
           <span class="post-description">{post.description}</span>
+          <div class="post-tags">
+            {#each post.tags as tag}
+              <span class="tag">#{tag}</span>
+            {/each}
+          </div>
         </div>
         <div class="post-preview-image">
           <img src={post.image.url} alt={post.image.alt} height={50} />
@@ -141,5 +145,19 @@
 
   .post-description {
     color: #aaaaaa;
+  }
+
+  .post-tags {
+    margin-top: 0.5em;
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    padding: 0.2em 0.5em;
+    font-size: 0.85em;
   }
 </style>
