@@ -4,9 +4,11 @@ import icon from 'astro-icon';
 import sitemap from '@astrojs/sitemap';
 import darkroseSyntaxTheme from './src/styles/syntaxTheme.json';
 
+import svelte from '@astrojs/svelte';
+
 export default defineConfig({
   site: 'https://snare.dev',
-  integrations: [mdx(), icon(), sitemap()],
+  integrations: [mdx(), icon(), sitemap(), svelte()],
   trailingSlash: 'never',
   build: {
     format: 'file',
