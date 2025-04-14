@@ -87,6 +87,51 @@ const { title, description, type, image, date, pageType } = Astro.props;
       is:inline
       async
       src="//gc.zgo.at/count.js"></script>
+    <script is:inline>
+      let scrollAmount = window.innerHeight * 0.1;
+      let pendingCount = '';
+
+      function updateScrollAmount() {
+        scrollAmount = window.innerHeight * 0.1;
+      }
+
+      window.addEventListener('resize', updateScrollAmount);
+
+      window.addEventListener('keydown', (e) => {
+        const target = e.target;
+
+        if (
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable
+        )
+          return;
+
+        const key = e.key;
+
+        // If number key pressed (but not 0 as the first digit)
+        if (/^[1-9]$/.test(key) || (pendingCount && key === '0')) {
+          pendingCount += key;
+          e.preventDefault();
+          return;
+        }
+
+        const count = pendingCount ? parseInt(pendingCount, 10) : 1;
+
+        if (key === 'j') {
+          window.scrollBy({ top: scrollAmount * count });
+          pendingCount = '';
+          e.preventDefault();
+        } else if (key === 'k') {
+          window.scrollBy({ top: -scrollAmount * count });
+          pendingCount = '';
+          e.preventDefault();
+        } else {
+          // Reset if key doesn't match
+          pendingCount = '';
+        }
+      });
+    </script>
   </head>
   <body>
     <Header />
