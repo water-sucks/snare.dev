@@ -42,7 +42,7 @@ hell `realpath()` came from.
 ## Part II :: Abstraction Does Not Mean Portability
 
 `realpath()` is not a portable construct in most places. The system `realpath()`
-will have vastly different behavior depending on how the linked C library
+will have vastly different behavior depending on how a language standard library
 implements it.
 
 ### `glibc` Implementation
@@ -190,9 +190,9 @@ platform-specific ways to retrieve an absolute file path given a file
 descriptor** (`fd`).
 
 _What the fuck???_ Who thought of this monstrosity? Apparently we just don't
-care that file descriptors don't necessarily refer to paths on disk anymore.
-Apparently shared memory and `pipe()` don't exist either. Jesus Christ. Indeed,
-they recognize the error of their ways with the following comment:
+care that file descriptors don't necessarily refer to file paths on disk
+anymore. Apparently shared memory and `pipe()` don't exist either. Jesus Christ.
+Indeed, they recognize the error of their ways with the following comment:
 
 > /// Calling this function is usually a bug.
 
@@ -207,6 +207,12 @@ At least the other POSIX-compliant OSes use `fnctl()` macros properly, but that
 will always depend on if the underlying OS `libc` will even expose these
 operations. At least for those OSes, their `libc` is the only way to access
 these types of things, so maybe it's a little more consistent, but hello??
+
+And not to mention, fun fact, this functionality simply DOESN'T EXIST on some
+platforms; OpenBSD is one of them. "_Who uses OpenBSD?_", you may ask. **That's
+not the point!** The point is that the fucking functionality isn't available on
+all platforms, so basically, when you don't have a path, and just have the `fd`,
+you're shit outta luck.
 
 So, here's the real question: **_why does `realpath()` even exist????_**
 
@@ -267,14 +273,27 @@ said path traversal attacks can absolve the usage of `realpath()` entirely in
 most cases. This is especially true when the `cwd` of a process doesn't need to
 change at all.
 
-Who will write this code, you may ask?
+There is one important caveat though; this is indeed another reason that
+`realpath()` functionality just shouldn't exist. It's step #2: since most
+`realpath()` implementations work by evaluating symlinks until a canonical path
+is realized, what happens if the symlink changes in the middle of evaluation?
+Simple. **You're fucked.** You'll end up with behavior that can vary depending
+on how the symlink was changed: at worst, you may end up getting a path that you
+will assume doesn't exist when it does, and end up overwriting information
+irreversibly. Now granted, it may not be as fatal as that, but the point is
+`realpath()` is extremely susceptible to race conditions due to underlying
+filesystem changes. If you're confident enough that symlink changes won't
+happen, that's on you. But this should not be something that is encouraged,
+_especially_ not by a language standard library.
+
+So, based on that, who will write this code, you may ask?
 
 _You_. You're smart. You can write this cross-platform path resolution code on
 your own if you need it. Needing to assume absolute paths is a fairly uncommon
 scenario, and to be frank, IMO it should not be a standard library function in
 general because people will end up reaching for it and run into these
-OS-specific footguns. `realpath()` itself is more of an operating
-system-specific construct, and should be treated as such.
+OS-specific footguns. `realpath()` itself is more an operating system-specific
+construct, and should be treated as such.
 
 I would write this code for an example, but to be honest, I'm lazy. And I also
 try _not_ to rely on `realpath()`-like functionality anymore, and just enforce
