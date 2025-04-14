@@ -11,9 +11,9 @@
 
       perSystem = {pkgs, ...}: {
         devShells.default = pkgs.mkShell {
-          name = "hello-svelte";
+          name = "snare-dev-shell";
           buildInputs = with pkgs; [
-            nodejs_18
+            nodejs_22
           ];
         };
       };
