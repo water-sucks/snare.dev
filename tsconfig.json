@@ -9,5 +9,10 @@
       "@types": ["src/types"]
     }
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.astro"]
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.astro",
+    "src/**/*.svelte"
+  ]
 }
