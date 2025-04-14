@@ -23,7 +23,9 @@
   let query: string = '';
   let filtered: Post[] = posts;
   let activeTags: string[] = [];
+
   let debounceTimeout: NodeJS.Timeout;
+  let searchInput: HTMLInputElement;
 
   onMount(() => {
     fuse = new Fuse(posts, {
@@ -69,6 +71,16 @@
     query = (e.target as HTMLInputElement).value.trim();
     debounceTimeout = setTimeout(updateSearch, 100);
   }
+
+  onMount(() => {
+    const params = new URLSearchParams(window.location.search);
+    const initialQuery = params.get('q');
+
+    if (initialQuery) {
+      query = initialQuery.trim();
+      updateSearch();
+    }
+  });
 </script>
 
 {#if activeTags.length > 0}
@@ -94,6 +106,7 @@
     placeholder="Discover musings..."
     on:input={onSearchInput}
     bind:value={query}
+    bind:this={searchInput}
     class="search-bar"
   />
 </div>

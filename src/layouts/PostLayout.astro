@@ -27,10 +27,22 @@ const { Content } = await post.render();
 >
   <main>
     <h1>{title}</h1>
-    <div class="metadata-line">
-      {formattedDate} :: {tags.map((tag: string) => `#${tag}`).join(', ')} :: {
-        timeToRead
-      }
+    <div class="below-title">
+      <div class="metadata-line">
+        {formattedDate} :: {timeToRead}
+      </div>
+      <div class="tag-line">
+        {
+          tags.map((tag: string) => (
+            <a
+              href={`/musings?q=${encodeURIComponent(`#${tag}`)}`}
+              class="tag-link"
+            >
+              #{tag}
+            </a>
+          ))
+        }
+      </div>
     </div>
     <img class="top-image" src={image.url} alt={image.alt} />
     <hr />
@@ -41,9 +53,22 @@ const { Content } = await post.render();
 </Layout>
 
 <style>
+  .below-title {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+
   .metadata-line {
     text-align: center;
     color: #888888;
+  }
+
+  .tag-line {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
   }
 
   .content {
