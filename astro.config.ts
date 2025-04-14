@@ -14,6 +14,7 @@ export default defineConfig({
     format: 'file',
   },
   markdown: {
+    syntaxHighlight: 'shiki',
     shikiConfig: {
       theme: darkroseSyntaxTheme,
     },
