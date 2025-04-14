@@ -24,6 +24,10 @@
   let filtered: Post[] = posts;
   let activeTags: string[] = [];
 
+  const allTags = Array.from(
+    new Set(posts.flatMap((post) => post.tags)),
+  ).sort();
+
   let debounceTimeout: NodeJS.Timeout;
   let searchInput: HTMLInputElement;
 
@@ -57,19 +61,30 @@
     filtered = result;
   }
 
-  function removeTag(tagToRemove: string) {
-    const tokens = query.trim().split(/\s+/);
-    const updatedTokens = tokens.filter(
-      (t) => t.toLowerCase() !== `#${tagToRemove.toLowerCase()}`,
-    );
-    query = updatedTokens.join(' ');
-    updateSearch();
-  }
-
   function onSearchInput(e: Event) {
     clearTimeout(debounceTimeout);
     query = (e.target as HTMLInputElement).value.trim();
     debounceTimeout = setTimeout(updateSearch, 100);
+  }
+
+  function focusSearch(e: KeyboardEvent) {
+    const target = e.target as HTMLElement;
+
+    const isTyping =
+      ['INPUT', 'TEXTAREA'].includes(target.tagName) ||
+      target.isContentEditable;
+
+    if (!isTyping && e.key === '/') {
+      e.preventDefault();
+      searchInput.focus();
+
+      const length = searchInput.value.length;
+      searchInput.setSelectionRange(length, length);
+    }
+
+    if (isTyping && e.key === 'Escape') {
+      (target as HTMLInputElement).blur();
+    }
   }
 
   onMount(() => {
@@ -81,34 +96,54 @@
       updateSearch();
     }
   });
-</script>
 
-{#if activeTags.length > 0}
-  <div class="active-tags">
-    {#each activeTags as tag}
-      <button
-        class="tag-chip"
-        on:click={() => removeTag(tag)}
-        aria-pressed="false"
-      >
-        #{tag} &times;
-      </button>
-    {/each}
-  </div>
-{/if}
+  onMount(() => {
+    window.addEventListener('keydown', focusSearch);
+    return () => window.removeEventListener('keydown', focusSearch);
+  });
+
+  function toggleTag(tag: string) {
+    const tokens = query.trim().split(/\s+/);
+    const tagToken = `#${tag}`;
+
+    if (tokens.includes(tagToken)) {
+      query = tokens.filter((t) => t !== tagToken).join(' ');
+    } else {
+      query = [...tokens, tagToken].join(' ').trim();
+    }
+
+    updateSearch();
+  }
+
+  function isTagActive(tag: string) {
+    return query.trim().split(/\s+/).includes(`#${tag}`);
+  }
+</script>
 
 <div class="search-container">
   <span class="search-icon">
     <Icon icon="mdi:magnify" />
   </span>
+
   <input
     type="text"
-    placeholder="Discover musings..."
-    on:input={onSearchInput}
+    placeholder="Search..."
     bind:value={query}
     bind:this={searchInput}
+    on:input={onSearchInput}
     class="search-bar"
   />
+</div>
+
+<div class="tag-grid">
+  {#each allTags as tag}
+    <button
+      class="tag-chip {isTagActive(tag) ? 'active' : ''}"
+      on:click={() => toggleTag(tag)}
+    >
+      #{tag}
+    </button>
+  {/each}
 </div>
 
 <div id="posts">
@@ -215,13 +250,6 @@
     font-size: 0.85em;
   }
 
-  .active-tags {
-    margin: 1em 0;
-    display: flex;
-    gap: 0.5em;
-    flex-wrap: wrap;
-  }
-
   .tag-chip {
     background: #121212;
     color: white;
@@ -230,10 +258,36 @@
     font-size: 0.9em;
     cursor: pointer;
     user-select: none;
-    transition: background 0.2s ease;
   }
 
   .tag-chip:hover {
     background: #333333;
+  }
+
+  .tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-bottom: 1em;
+  }
+
+  .tag-chip {
+    background-color: transparent;
+    border: 1px solid #888;
+    color: #ccc;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .tag-chip:hover {
+    border-color: #fff;
+    color: white;
+  }
+
+  .tag-chip.active {
+    background-color: #fff;
+    color: #111;
+    border-color: #fff;
   }
 </style>
