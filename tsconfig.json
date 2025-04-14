@@ -1,7 +1,20 @@
 {
-  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "jsx": "preserve",
     "baseUrl": ".",
+    "strict": true,
     "paths": {
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
@@ -13,6 +26,9 @@
     "src/**/*.d.ts",
     "src/**/*.ts",
     "src/**/*.astro",
-    "src/**/*.svelte"
-  ]
+    "src/**/*.svelte",
+    "${configDir}/.astro/types.d.ts",
+    "${configDir}/**/*"
+  ],
+  "exclude": ["${configDir}/dist"]
 }
