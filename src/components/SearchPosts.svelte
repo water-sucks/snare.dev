@@ -18,9 +18,11 @@
 
   export let posts: Post[] = [];
 
+  let fuse: Fuse<Post>;
+
   let query: string = '';
   let filtered: Post[] = posts;
-  let fuse: Fuse<Post>;
+  let activeTags: string[] = [];
   let debounceTimeout: NodeJS.Timeout;
 
   onMount(() => {
@@ -30,19 +32,58 @@
     });
   });
 
+  function updateSearch() {
+    const tokens = query.trim().split(/\s+/);
+    activeTags = tokens
+      .filter((t) => t.startsWith('#'))
+      .map((t) => t.slice(1).toLowerCase());
+    const textQuery = tokens
+      .filter((t) => !t.startsWith('#'))
+      .join(' ')
+      .trim();
+
+    let result = textQuery ? fuse.search(textQuery).map((r) => r.item) : posts;
+
+    if (activeTags.length > 0) {
+      result = result.filter((post) =>
+        activeTags.every((tag) =>
+          post.tags.some((t) => t.toLowerCase().includes(tag)),
+        ),
+      );
+    }
+
+    filtered = result;
+  }
+
+  function removeTag(tagToRemove: string) {
+    const tokens = query.trim().split(/\s+/);
+    const updatedTokens = tokens.filter(
+      (t) => t.toLowerCase() !== `#${tagToRemove.toLowerCase()}`,
+    );
+    query = updatedTokens.join(' ');
+    updateSearch();
+  }
+
   function onSearchInput(e: Event) {
     clearTimeout(debounceTimeout);
-    query = (e.target as HTMLInputElement).value;
-    debounceTimeout = setTimeout(() => {
-      if (!query.trim()) {
-        filtered = posts;
-      } else {
-        const results = fuse.search(query).map((r) => r.item);
-        filtered = results;
-      }
-    }, 300);
+    query = (e.target as HTMLInputElement).value.trim();
+    debounceTimeout = setTimeout(updateSearch, 100);
   }
 </script>
+
+{#if activeTags.length > 0}
+  <div class="active-tags">
+    {#each activeTags as tag}
+      <button
+        class="tag-chip"
+        on:click={() => removeTag(tag)}
+        aria-pressed="false"
+      >
+        #{tag} &times;
+      </button>
+    {/each}
+  </div>
+{/if}
 
 <div class="search-container">
   <span class="search-icon">
@@ -52,6 +93,7 @@
     type="text"
     placeholder="Discover musings..."
     on:input={onSearchInput}
+    bind:value={query}
     class="search-bar"
   />
 </div>
@@ -155,9 +197,30 @@
   }
 
   .tag {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ccc;
+    background: #121212;
     padding: 0.2em 0.5em;
     font-size: 0.85em;
+  }
+
+  .active-tags {
+    margin: 1em 0;
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+  }
+
+  .tag-chip {
+    background: #121212;
+    color: white;
+    padding: 0.25em 0.6em;
+    border: 1px solid white;
+    font-size: 0.9em;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+  }
+
+  .tag-chip:hover {
+    background: #333333;
   }
 </style>
