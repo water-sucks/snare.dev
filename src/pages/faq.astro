@@ -1,0 +1,85 @@
+---
+import Layout from '@layouts/Layout.astro';
+
+const faqs = [
+  {
+    question: 'Why "@water-sucks" as a handle?',
+    answer: `Did you know 100% of people who drink water <strong>die</strong>? Crazy, right?
+Dr. Pepper is better anyway.`,
+  },
+  {
+    question: "What is this shitty colorscheme? I can't read anything!",
+    answer: `Fuck off, it's my favorite colors smashed together into a single palette,
+and it's called <a href="https://github.com/water-sucks/darkrose.nvim">darkrose.nvim</a>,
+because I think roses are cool. If you can't read it, get better eyes. That's your problem.`,
+  },
+  {
+    question: "What the fuck does 'aspiring, but never achieving' even mean?",
+    answer: `I have a lot of dreams. I don't live up to them. <em>Yet.</em>`,
+  },
+  {
+    question: 'What kind of software development do you do?',
+    answer:
+      '<strong>Whatever gets me paid</strong>. And when shit gets annoying, I solve it for myself.',
+  },
+  {
+    question: 'Why are you so mean?',
+    answer: 'Am I?',
+  },
+  {
+    question: 'How long have you been playing drums?',
+    answer:
+      'I started playing when I was around 6 years old, so quite a while now. Since 2009, basically.',
+  },
+  {
+    question: 'Where do you work?',
+    answer: `I'm funemployed. If you wanna hire me, here's my <a href="/resume.pdf">resume</a>.`,
+  },
+  {
+    question: 'How can I talk to you?',
+    answer: `You should know better. Anyways, scroll to the bottom. Click on the icons. Or go to
+the <a href="/">homepage</a> and read the code.`,
+  },
+];
+---
+
+<Layout
+  title="FAQ"
+  description="Since you're so damn nosy, here's a bit about me."
+  pageType="faq"
+>
+  <h1>Questions</h1>
+
+  <div class="faq-list">
+    {
+      faqs.map((faq) => (
+        <div class="faq-item">
+          <h3>{faq.question}</h3>
+          <p set:html={faq.answer} />
+        </div>
+      ))
+    }
+  </div>
+</Layout>
+
+<style>
+  .faq-list {
+    margin-top: 2em;
+  }
+
+  .faq-item {
+    margin-bottom: 1.5em;
+    padding: 1em;
+    border: 1px solid #888888;
+  }
+
+  .faq-item h3 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    color: #a26b35;
+  }
+
+  .faq-item p {
+    margin-bottom: 0;
+  }
+</style>
