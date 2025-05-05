@@ -33,6 +33,11 @@ const { title, description, type, image, date, pageType } = Astro.props;
       title="Varun's Musings"
       href={`${Astro.site}rss.xml`}
     />
+    {
+      Astro.url.pathname !== '/' && (
+        <link rel="canonical" href={`https://snare.dev${Astro.url.pathname}`} />
+      )
+    }
     <title>{title} | Varun Narravula</title>
     <SEO
       {title}

@@ -9,10 +9,7 @@ import svelte from '@astrojs/svelte';
 export default defineConfig({
   site: 'https://snare.dev',
   integrations: [mdx(), icon(), sitemap(), svelte()],
-  trailingSlash: 'never',
-  build: {
-    format: 'file',
-  },
+  trailingSlash: 'always',
   markdown: {
     syntaxHighlight: 'shiki',
     shikiConfig: {
