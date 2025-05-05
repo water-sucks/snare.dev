@@ -28,6 +28,11 @@ const currentPath = Astro.url.pathname;
     >FAQ</a
   >
   <a
+    href="/quoth-mine"
+    class={currentPath.startsWith('/quoth-mine') ? 'active-link' : 'link'}
+    >Quoth</a
+  >
+  <a
     href="/musings"
     class={currentPath.startsWith('/musings') ? 'active-link' : 'link'}
     >Musings</a

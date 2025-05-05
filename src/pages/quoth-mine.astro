@@ -1,0 +1,84 @@
+---
+import Layout from '@layouts/Layout.astro';
+
+const quotes = [
+  {
+    text: `<p>I saw a moth fly too close to the light next to me while reheating
+some pizza and fall to the ground, unable to fly ever again.</p>
+
+<p>Icarus he was, Mothcarus even.</p>`,
+    author: 'Varun Narravula',
+    source: 'High at 2 A.M.',
+  },
+  {
+    text: `My formula for greatness in a human being is amor fati: that one wants
+nothing to be different, not forward, not backward, not in all eternity.`,
+    author: 'Friedrich Nietzsche',
+    source: 'On The Genealogy of Morals',
+  },
+  {
+    text: 'The only true wisdom is in knowing you know nothing.',
+    author: 'Socrates',
+    source: 'unknown',
+  },
+  {
+    text: `Every time one generates code by prompt, they create a new stillborn program;
+vibe coding is the art of stitching together their corpses into Frankenstein’s monster.”
+`,
+    author: 'Clayton W. Ramsey',
+    source: "I'd Rather Read the Prompt",
+  },
+];
+---
+
+<Layout
+  title="Quoth Mine"
+  description="Mini-musings. Things that I find interesting from other people."
+  pageType="quote-mine"
+>
+  <h1>Quoth Mine</h1>
+  <p>
+    A quote mine. Mini-musings. Random things that I find interesting from other
+    people, and/or myself.
+  </p>
+
+  <div class="quote-list">
+    {
+      quotes.map((quote) => (
+        <blockquote class="quote-item">
+          <p class="quote-text" set:html={quote.text} />
+          <footer class="quote-footer">
+            ~&gt;
+            {quote.source ? `${quote.author}, "${quote.source}"` : quote.author}
+          </footer>
+        </blockquote>
+      ))
+    }
+  </div>
+</Layout>
+
+<style>
+  .quote-list {
+    margin-top: 2em;
+  }
+
+  .quote-item {
+    margin-bottom: 1.5em;
+    padding: 1em;
+    border-left: 5px solid #8b2950;
+    background-color: #111111;
+    border-radius: 3px;
+  }
+
+  .quote-text {
+    font-style: italic !important;
+    color: #c9c1c9;
+    margin-bottom: 0.5em;
+  }
+
+  .quote-footer {
+    font-size: 0.9em;
+    color: #;
+    text-align: right;
+  }
+</style>
