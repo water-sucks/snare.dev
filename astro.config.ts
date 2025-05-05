@@ -21,4 +21,9 @@ export default defineConfig({
   experimental: {
     responsiveImages: true,
   },
+  vite: {
+    server: {
+      allowedHosts: true,
+    },
+  },
 });

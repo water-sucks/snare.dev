@@ -1,0 +1,32 @@
+```haskell
+data Person = Person {
+  name :: String,
+  desc :: String,
+  school :: String,
+  occupation :: [String],
+  resume :: String,
+  contact :: [(String, String)]
+} deriving (Show)
+
+me :: Person -- I think?
+me = Person {
+  name = "Varun Narravula",
+  desc = "Aspiring, but never achieving.",
+  school = "San Francisco State University",
+  occupation = [
+    "drums",
+    "programming"
+    -- TODO: "writing"
+    -- many more...
+  ],
+  resume = "curl https://snare.dev/resume.pdf",
+  contact = [
+    ("Email", "varun@snare.dev"),
+    ("Matrix", "@water-sucks:matrix.org"),
+    ("Discord", "@water.sucks")
+  ]
+}
+
+main :: IO ()
+main = print me
+```
