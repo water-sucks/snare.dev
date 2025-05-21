@@ -106,8 +106,8 @@ great
 so that's a plus.
 
 I've been doing open source contributions as well. I've continued to work on my
-[NixOS CLI](https://github.com/water-sucks/nixos), and am almost done with a
-full rewrite of it from Zig to Go that I've been doing solely while riding
+[NixOS CLI](https://github.com/nix-community/nixos-cli), and am almost done with
+a full rewrite of it from Zig to Go that I've been doing solely while riding
 [BART](https://en.wikipedia.org/wiki/Bay_Area_Rapid_Transit) to/from university,
 so I'm not done yet. But I will be soon! I've also slowly been increasing my
 contributions to various Nix ecosystems such as `nixpkgs` and `home-manager`. My
