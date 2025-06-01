@@ -63,7 +63,7 @@
 
   function onSearchInput(e: Event) {
     clearTimeout(debounceTimeout);
-    query = (e.target as HTMLInputElement).value.trim();
+    query = (e.target as HTMLInputElement).value;
     debounceTimeout = setTimeout(updateSearch, 100);
   }
 
