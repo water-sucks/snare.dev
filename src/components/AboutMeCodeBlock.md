@@ -17,6 +17,7 @@ me = Person {
     -- TODO: "writing"
     -- many more...
   ],
+  work = "ANDYL <https://andyl.com>",
   resume = "curl https://snare.dev/resume.pdf",
   contact = [
     ("Email", "varun@snare.dev"),
