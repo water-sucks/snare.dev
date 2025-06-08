@@ -24,8 +24,11 @@ main h6 {
 
 blockquote > p {
   color: #888888;
-  text-align: center;
+  text-align: left;
   font-style: italic;
+  margin-left: -2em;
+  padding-left: 15px;
+  border-left: 3px solid #fff;
 }
 
 .astro-code {
