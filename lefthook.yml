@@ -10,10 +10,14 @@ pre-commit:
   commands:
     js:
       glob: '*.{js,ts,astro}'
-      run: npx prettier -w {staged_files} && npx eslint {staged_files} && git add {staged_files}
+      run:
+        npx prettier -w {staged_files} && npx eslint {staged_files} && git add
+        {staged_files}
     css:
       glob: '*.{css,scss}'
-      run: npx prettier -w {staged_files} && npx stylelint {staged_files} && git add {staged_files}
+      run:
+        npx prettier -w {staged_files} && npx stylelint {staged_files} && git
+        add {staged_files}
     md:
       glob: '*.md'
       run: npx prettier -w {staged_files} && git add {staged_files}

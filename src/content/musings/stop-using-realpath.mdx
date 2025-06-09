@@ -5,8 +5,8 @@ description: 'Why realpath() is a terrible function'
 author: 'Varun Narravula'
 timeToRead: 11 minutes
 image:
-    url: '/assets/realpath-funny.png'
-    alt: 'A fake run of the realpath command'
+  url: '/assets/realpath-funny.png'
+  alt: 'A fake run of the realpath command'
 tags: ['programming', 'shell', 'zig', 'die']
 ---
 
@@ -23,11 +23,11 @@ But why?
 
 I stated down a rabbit hole of research on `realpath()` and its various
 incarnations when I ran into a bizarre problem while working on my reimagined
-[NixOS CLI utility](https://github.com/nix-community/nixos-cli). This is a rewrite of
-various assorted scripts throughout the NixOS ecosystem in Zig[^rewrite], and
-these scripts often relied on the usage of absolute paths in order to function.
-I didn't question this until I found out that my invocations of
-`std.fs.realpath()` were causing an instance of
+[NixOS CLI utility](https://github.com/nix-community/nixos-cli). This is a
+rewrite of various assorted scripts throughout the NixOS ecosystem in
+Zig[^rewrite], and these scripts often relied on the usage of absolute paths in
+order to function. I didn't question this until I found out that my invocations
+of `std.fs.realpath()` were causing an instance of
 [detectable illegal behavior](https://ziglang.org/documentation/0.14.0/#toc-Illegal-Behavior)[^dib]
 that only occurred in `ReleaseSafe` mode, but not in `Debug` mode during
 development.
