@@ -3,6 +3,8 @@ import mdx from '@astrojs/mdx';
 import icon from 'astro-icon';
 import sitemap from '@astrojs/sitemap';
 import darkroseSyntaxTheme from './src/styles/syntaxTheme.json';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 import svelte from '@astrojs/svelte';
 
@@ -14,6 +16,8 @@ export default defineConfig({
     shikiConfig: {
       theme: darkroseSyntaxTheme,
     },
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
   },
   image: {
     experimentalLayout: 'full-width',

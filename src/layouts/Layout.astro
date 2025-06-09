@@ -38,6 +38,12 @@ const { title, description, type, image, date, pageType } = Astro.props;
         <link rel="canonical" href={`https://snare.dev${Astro.url.pathname}`} />
       )
     }
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
+      integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
+      crossorigin="anonymous"
+    />
     <title>{title} | Varun Narravula</title>
     <SEO
       {title}

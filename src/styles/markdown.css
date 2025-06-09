@@ -37,3 +37,12 @@ blockquote > p {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+
+.katex-display {
+  overflow: auto hidden;
+  max-width: 100%;
+  background-color: #121212;
+
+  margin: 0.5rem 0;
+  padding: 1rem 1rem;
+}
