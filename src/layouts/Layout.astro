@@ -12,12 +12,14 @@ type Props = {
   type?: string;
   image?: string;
   date?: Date;
+  authors?: Array<string>;
   pageType: string;
 };
 
 const defaultImage = `${new URL('/phoenix.png', Astro.url)}`;
 
-const { title, description, type, image, date, pageType } = Astro.props;
+const { title, description, type, image, date, pageType, authors } =
+  Astro.props;
 ---
 
 <html lang="en">
@@ -56,7 +58,7 @@ const { title, description, type, image, date, pageType } = Astro.props;
           image: image || defaultImage,
         },
         article: {
-          authors: ['Varun Narravula'], // Who else? Lmao.
+          authors: authors || ['Varun Narravula'], // Who else? Lmao.
           publishedTime: formatISO(date || new Date()),
         },
       }}
