@@ -7,7 +7,6 @@ const musingsCollection = defineCollection({
     date: z.string(),
     description: z.string(),
     authors: z.array(z.string()).default(['Varun Narravula']),
-    timeToRead: z.string(),
     image: z.object({
       url: z.string(),
       alt: z.string(),

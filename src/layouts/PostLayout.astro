@@ -11,14 +11,35 @@ export interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, tags, timeToRead, image, authors } =
-  post.data;
+const { title, description, date, tags, image, authors } = post.data;
 
 const authorListFormatter = new Intl.ListFormat('en', {
   style: 'long',
   type: 'conjunction',
 });
 const authorsStr = authorListFormatter.format(authors);
+
+// The estimated reading rate for the average reader is
+// ~200 words per minute (WPM).
+const READING_RATE = 200;
+
+const timeToRead = (() => {
+  const htmlContent = post.body || post.rendered?.html || '';
+
+  const textContent = htmlContent
+    .replace(/<[^>]+>/g, ' ') // Remove HTML tags
+    .replace(/&[^;]+;/g, ' '); // Remove HTML entities
+
+  const rawWords = textContent.replace(/[^a-zA-Z0-9\s']/g, ' ');
+
+  const wordCount = rawWords
+    .split(/\s+/)
+    .filter((word) => /^[a-zA-Z]+(?:'[a-zA-Z]+)?$/.test(word)).length;
+
+  const minutes = Math.max(1, Math.ceil(wordCount / READING_RATE));
+
+  return `${minutes} ${minutes == 1 ? 'minute' : 'minutes'}`;
+})();
 
 const formattedDate = format(new Date(date), 'PPP');
 

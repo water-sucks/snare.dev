@@ -2,7 +2,6 @@
 title: 'Year of Varun #21 - A Retrospective'
 date: 2025/04/19
 description: 'A retrospective on turning 22'
-timeToRead: 11 minutes
 image:
   url: '/assets/22-birthday.png'
   alt: '22 in bright orange'

@@ -7,8 +7,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "ert": "tsx scripts/reading-time.ts src/content/musings"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -30,8 +29,7 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "sanitize-html": "^2.13.0",
-    "svelte": "^5.26.2",
-    "tsx": "^4.19.3"
+    "svelte": "^5.26.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
@@ -42,7 +40,6 @@
     "lefthook": "^1.6.10",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
-    "remove-markdown": "^0.6.0",
     "stylelint": "^16.3.1",
     "stylelint-config-recommended": "^14.0.0",
     "typescript": "^5.8.3",

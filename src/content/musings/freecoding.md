@@ -2,7 +2,6 @@
 title: 'Freecoding - An Alternative To Vibe Coding'
 date: 2025/06/20
 description: 'A manifesto against vibe coding, and for an alternative'
-timeToRead: 28 minutes
 image:
   url: '/assets/mario-hates-cursor-ide.png'
   alt:
