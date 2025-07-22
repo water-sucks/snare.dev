@@ -1,7 +1,13 @@
 ---
 import Layout from '@layouts/Layout.astro';
 
-const quotes = [
+type Quote = {
+  text: string;
+  author: string;
+  source: string;
+};
+
+const quotes: Array<Quote> = [
   {
     text: `<p>I saw a moth fly too close to the light next to me while reheating
 some pizza and fall to the ground, unable to fly ever again.</p>
@@ -20,6 +26,11 @@ nothing to be different, not forward, not backward, not in all eternity.`,
     text: 'The only true wisdom is in knowing you know nothing.',
     author: 'Socrates',
     source: 'unknown',
+  },
+  {
+    text: 'That which has been is what will be, that which is done is what will be done, and there is nothing new under the sun.',
+    author: 'A Dead God',
+    source: 'Ecclesiastes 1:9',
   },
   {
     text: `Every time one generates code by prompt, they create a new stillborn program;
