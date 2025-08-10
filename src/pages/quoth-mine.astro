@@ -3,14 +3,13 @@ import Layout from '@layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const quotes = await getCollection('quotes');
-quotes.sort((a, b) => Date.parse(a.data.date) - Date.parse(b.data.date));
+quotes.sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
 
 const rendered = await Promise.all(
   quotes.map(async (quote) => {
     const { Content } = await quote.render();
     return {
       Content,
-
       author: quote.data.author,
       source: quote.data.source,
     };
@@ -29,6 +28,11 @@ const rendered = await Promise.all(
     people, and/or myself.
   </p>
 
+  <div id="quote-controls" class="controls" hidden>
+    <button id="show-all">Show All</button>
+    <button id="random">I'm Feeling Lucky</button>
+  </div>
+
   <div class="quote-list">
     {
       rendered.map(({ Content, author, source }) => (
@@ -37,13 +41,57 @@ const rendered = await Promise.all(
             <Content />
           </div>
           <footer class="quote-footer">
-            ~&gt;
-            <strong>{author}</strong>, {`"${source}"`}
+            ~&gt; <strong>{author}</strong>, {`"${source}"`}
           </footer>
         </blockquote>
       ))
     }
   </div>
+
+  <script>
+    (() => {
+      const quotes = document.querySelectorAll<HTMLElement>('.quote-item');
+      const controls = document.getElementById('quote-controls')!;
+      const showAllBtn = document.getElementById('show-all')!;
+      const randomBtn = document.getElementById('random')!;
+
+      if (!quotes.length) return;
+
+      let showingAll = false;
+
+      const pickRandom = () => {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        quotes.forEach((q, i) => {
+          q.style.display = i === randomIndex ? '' : 'none';
+        });
+        showingAll = false;
+      };
+
+      const showAll = () => {
+        quotes.forEach((q) => (q.style.display = ''));
+        showingAll = true;
+      };
+
+      showAllBtn.addEventListener('click', () => {
+        if (showingAll) {
+          pickRandom();
+          randomBtn.style.display = '';
+          showAllBtn.textContent = 'Show All';
+        } else {
+          showAll();
+          randomBtn.style.display = 'none';
+          showAllBtn.textContent = 'Random Mode';
+        }
+      });
+
+      randomBtn.addEventListener('click', () => {
+        pickRandom();
+      });
+
+      pickRandom();
+      controls.hidden = false;
+    })();
+  </script>
 </Layout>
 
 <style>
@@ -60,14 +108,31 @@ const rendered = await Promise.all(
   }
 
   .quote-text {
-    font-style: italic !important;
     color: #c9c1c9;
     margin-bottom: 0.5em;
   }
 
   .quote-footer {
     font-size: 0.9em;
-    color: #;
     text-align: right;
+  }
+
+  .controls {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .controls button {
+    margin-right: 0.5em;
+    padding: 0.4em 0.8em;
+    background-color: #8b2950;
+    color: #c9c1c9;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .controls button:hover {
+    background-color: #a03c64;
   }
 </style>
