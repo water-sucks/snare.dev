@@ -15,6 +15,16 @@ const musingsCollection = defineCollection({
   }),
 });
 
+const quotesCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    author: z.string(),
+    source: z.string(),
+    date: z.string(),
+  }),
+});
+
 export const collections = {
   musings: musingsCollection,
+  quotes: quotesCollection,
 };

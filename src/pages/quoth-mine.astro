@@ -1,61 +1,21 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
-type Quote = {
-  text: string;
-  author: string;
-  source: string;
-};
+const quotes = await getCollection('quotes');
+quotes.sort((a, b) => Date.parse(a.data.date) - Date.parse(b.data.date));
 
-const quotes: Array<Quote> = [
-  {
-    text: `<p>I saw a moth fly too close to the light next to me while reheating
-some pizza and fall to the ground, unable to fly ever again.</p>
+const rendered = await Promise.all(
+  quotes.map(async (quote) => {
+    const { Content } = await quote.render();
+    return {
+      Content,
 
-<p>Icarus he was, Mothcarus even.</p>`,
-    author: 'Varun Narravula',
-    source: 'High at 2 A.M.',
-  },
-  {
-    text: `My formula for greatness in a human being is amor fati: that one wants
-nothing to be different, not forward, not backward, not in all eternity.`,
-    author: 'Friedrich Nietzsche',
-    source: 'On The Genealogy of Morals',
-  },
-  {
-    text: 'The only true wisdom is in knowing you know nothing.',
-    author: 'Socrates',
-    source: 'unknown',
-  },
-  {
-    text: 'That which has been is what will be, that which is done is what will be done, and there is nothing new under the sun.',
-    author: 'A Dead God',
-    source: 'Ecclesiastes 1:9',
-  },
-  {
-    text: `Every time one generates code by prompt, they create a new stillborn program;
-vibe coding is the art of stitching together their corpses into Frankenstein’s monster.”
-`,
-    author: 'Clayton W. Ramsey',
-    source: "I'd Rather Read the Prompt",
-  },
-  {
-    text: "Holy shit, why do I keep getting banger ideas, but I don't have the means to execute said ideas?",
-    author: '/usr/bin/pingu',
-    source: "hell :3 (a Discord server I'm in)",
-  },
-  {
-    text: "I'm worthy of that which I make myself to be worthy of.",
-    author: 'Varun Narravula',
-    source:
-      "Self-reflecting on Christianity's idea of not being worthy of anything",
-  },
-  {
-    text: `I trust you about as much as I trust "your branch is up to date with origin/main"`,
-    author: '@bashbunni.dev',
-    source: 'Bluesky',
-  },
-];
+      author: quote.data.author,
+      source: quote.data.source,
+    };
+  }),
+);
 ---
 
 <Layout
@@ -71,12 +31,14 @@ vibe coding is the art of stitching together their corpses into Frankenstein’s
 
   <div class="quote-list">
     {
-      quotes.map((quote) => (
+      rendered.map(({ Content, author, source }) => (
         <blockquote class="quote-item">
-          <p class="quote-text" set:html={quote.text} />
+          <div class="quote-text">
+            <Content />
+          </div>
           <footer class="quote-footer">
             ~&gt;
-            {quote.source ? `${quote.author}, "${quote.source}"` : quote.author}
+            <strong>{author}</strong>, {`"${source}"`}
           </footer>
         </blockquote>
       ))
