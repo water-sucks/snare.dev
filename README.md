@@ -10,8 +10,9 @@ The official source code is located on
 [sr.ht](https://sr.ht/~watersucks/snare.dev); a
 [GitHub mirror](https://github.com/water-sucks/) also exists.
 
-Prefer sending patches to the [mailing list](~watersucks/snare.dev@lists.sr.ht)
-if you see any mistakes on the website and if you would like to fix them.
+Prefer sending patches to the
+[mailing list](mailto:~watersucks/snare.dev@lists.sr.ht) if you see any mistakes
+on the website and if you would like to fix them.
 
 Thanks to [Astro](https://astro.build) and [Netlify](https://netlify.com) for
 being the best and giving me the tooling needed for building this website.
