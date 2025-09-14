@@ -13,7 +13,7 @@
         devShells.default = pkgs.mkShell {
           name = "snare-dev-shell";
           buildInputs = with pkgs; [
-            nodejs_22
+            nodejs_24
           ];
         };
       };
