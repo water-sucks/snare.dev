@@ -20,10 +20,8 @@ export default defineConfig({
     rehypePlugins: [rehypeKatex],
   },
   image: {
-    experimentalLayout: 'full-width',
-  },
-  experimental: {
-    responsiveImages: true,
+    layout: 'full-width',
+    responsiveStyles: true,
   },
   vite: {
     server: {
