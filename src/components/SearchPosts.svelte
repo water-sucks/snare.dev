@@ -165,7 +165,7 @@
           </div>
         </div>
         <div class="post-preview-image">
-          <img src={post.image.url} alt={post.image.alt} height={50} />
+          <img src={post.image.url} alt={post.image.alt} />
         </div>
       </div>
       <hr />
@@ -212,13 +212,14 @@
   }
 
   .post-row {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
   }
 
   .post {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
   }
 
   .post-details {
@@ -242,6 +243,18 @@
     display: flex;
     gap: 0.5em;
     flex-wrap: wrap;
+  }
+
+  .post-preview-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .post-preview-image img {
+    max-height: 80px;
+    max-width: 100%;
+    object-fit: contain;
   }
 
   .tag {
