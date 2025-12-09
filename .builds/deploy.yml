@@ -1,0 +1,43 @@
+image: nixos/unstable
+
+secrets:
+  - 774e8c37-72dd-42a6-acd9-7934f854f52d
+
+packages:
+  - nixos.netlify-cli
+
+environment:
+  NIX_CONFIG: 'experimental-features = nix-command flakes'
+  NETLIFY_SITE_ID: 'f966bde3-bef5-4171-a5d5-4774e4158821'
+
+sources:
+  - https://git.sr.ht/~watersucks/snare.dev
+
+tasks:
+  - build: |
+      cd ~/snare.dev
+
+      nix develop .# -c npm ci
+      nix develop .# -c npm run build
+
+  - deploy: |
+      cd ~/snare.dev
+
+      if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD)" ]; then \
+        complete-build; \
+      fi 
+
+      {
+        set +x
+        . ~/.build-secrets
+        set -x
+      }
+
+      export NETLIFY_AUTH_TOKEN
+
+      netlify deploy --site=$NETLIFY_SITE_ID --dir=./dist --prod --no-build
+
+triggers:
+  - action: email
+    condition: failure
+    to: 'Varun Narravula <varun@snare.dev>'
