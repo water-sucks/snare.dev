@@ -1,5 +1,5 @@
 {
-  description = "Description for the project";
+  description = "snare.dev :: Varun's personal website";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
