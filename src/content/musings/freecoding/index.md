@@ -3,7 +3,7 @@ title: 'Freecoding - An Alternative To Vibe Coding'
 date: 2025/06/20
 description: 'A manifesto against vibe coding, and for an alternative'
 image:
-  url: ./mario-hates-cursor.png
+  url: ./mario-hates-cursor.webp
   alt:
     'Mario throws himself off a building after looking at AI-powered Cursor IDE'
 tags: ['programming', 'ai']

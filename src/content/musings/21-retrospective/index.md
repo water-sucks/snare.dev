@@ -3,7 +3,7 @@ title: 'Year of Varun #21 - A Retrospective'
 date: 2025/04/19
 description: 'A retrospective on turning 22'
 image:
-  url: ./22-birthday.png
+  url: ./22-birthday.webp
   alt: '22 in bright orange'
 tags: ['birthday', 'retrospective', 'post-mortem']
 ---
