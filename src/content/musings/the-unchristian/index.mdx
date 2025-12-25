@@ -3,12 +3,12 @@ title: 'The Unchristian'
 date: 2024/06/08
 description: 'A retelling of why I left the church and am now atheist.'
 image:
-  url: '/assets/church-interior.png'
+  url: ./church-interior.png
   alt: 'The interior of a church'
 tags: ['christianity', 'deconstruction', 'atheism']
 ---
 
-import Image from '@components/mdx/Image.astro';
+import ImageWithCaption from '@components/mdx/ImageWithCaption.astro';
 
 ## Part 0: Hi there.
 
@@ -89,9 +89,12 @@ I had won the game of life while still being so young. Little did I know that my
 response to this question was one that I would laugh at myself for, given some
 time.
 
-<Image
-  name="jesus-baptism.png"
+import jesusBaptism from './jesus-baptism.png';
+
+<ImageWithCaption
+  src={jesusBaptism}
   alt="Illustration of Jesus getting baptized by John"
+  caption="I really did feel like Jesus getting baptized by John at that moment"
 />
 
 Regardless of that, after I came out of the water, I felt as if Jesus Himself
@@ -152,8 +155,10 @@ over to other genres of music.
 _Spoiler alert_: this transition to other types of music didn't work; I still
 listen to metal today.
 
-<Image
-  name="brr-brr-deng.jpg"
+import brrBrrDeng from './brr-brr-deng.jpg';
+
+<ImageWithCaption
+  src={brrBrrDeng}
   alt="Mudvayne brr brr deng meme"
   caption="Yeah, it was definitely this dude that made me ditch religion."
   width="400px"
@@ -233,8 +238,10 @@ group with my campus lead pastor as the leader of it, and we were discussing
 quite often the core tenets of the Christian faith. _Anything to quell the very
 doubt that would send me to the abyss_, I thought.
 
-<Image
-  name="david-jeremiah-bible.jpg"
+import davidJeremiahBible from './david-jeremiah-bible.jpg';
+
+<ImageWithCaption
+  src={davidJeremiahBible}
   alt="My personal Bible, with commentary from David Jeremiah"
   width="300px"
   caption="My personal Bible, with commentary from David Jeremiah"
@@ -269,8 +276,10 @@ was buried in it, and if it was worth believing.
 
 ## Part III: Deconstruction
 
-<Image
-  name="scrambled-road.jpg"
+import scrambledRoad from './scrambled-road.jpg';
+
+<ImageWithCaption
+  src={scrambledRoad}
   alt="Man standing at beginning of scrambled road"
 />
 
@@ -327,8 +336,10 @@ the way ignorance is bliss, right_? This anger did eventually settle, and the
 only feeling I was left with was peace. My faith was changed forever, but for
 the better.
 
-<Image
-  name="man-standing-in-front-of-god.jpg"
+import manStandingInFrontOfGod from './man-standing-in-front-of-god.jpg';
+
+<ImageWithCaption
+  src={manStandingInFrontOfGod}
   alt="Man standing in front of God"
   caption="My interrogation of God was commencing."
 />
@@ -450,7 +461,9 @@ atheists alike have heard at some point in their lives:
 
     > God works in mysterious ways.
 
-<Image name="man-staring-at-wall.jpg" alt="Man staring at a brick wall" />
+import manStaringAtWall from './man-staring-at-wall.jpg';
+
+<ImageWithCaption src={manStaringAtWall} alt="Man staring at a brick wall" />
 
 This phrase was straight-up painful to hear after a while; it was as mentally
 painful as running straight into a brick wall. The sheer NUMBER of times I've

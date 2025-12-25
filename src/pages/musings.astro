@@ -10,7 +10,10 @@ const preparedPosts = posts.map((post) => ({
   title: post.data.title,
   description: post.data.description,
   date: post.data.date,
-  image: post.data.image,
+  image: {
+    url: post.data.image.url.src,
+    alt: post.data.image.alt,
+  },
   tags: post.data.tags,
   slug: post.slug,
 }));

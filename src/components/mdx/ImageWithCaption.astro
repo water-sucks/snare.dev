@@ -3,25 +3,14 @@ import type { ImageMetadata } from 'astro';
 import { Image as AstroImage } from 'astro:assets';
 
 interface Props {
-  name: string;
+  src: ImageMetadata;
   alt: string;
-  caption?: string;
+  caption: string;
   width?: number;
   height?: number;
 }
 
-const { name, alt, caption, width, height } = Astro.props;
-
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/public/assets/*.{jpeg,jpg,png,gif}',
-);
-
-const imagePath = `/public/assets/${name}`;
-if (!images[imagePath]) {
-  throw new Error(
-    `"${imagePath}" does not exist in glob: "public/assets/*.{jpeg,jpg,png,gif}"`,
-  );
-}
+const { src, alt, caption, width, height } = Astro.props;
 ---
 
 <style>
@@ -33,13 +22,7 @@ if (!images[imagePath]) {
 <!-- This is a MDX component. Use inline styles, or they won't
 be bundled properly. -->
 <figure style="text-align: center;">
-  <AstroImage
-    class="post-image"
-    src={images[imagePath]()}
-    {alt}
-    {width}
-    {height}
-  />
+  <AstroImage class="post-image" {src} {alt} {width} {height} />
   {
     caption ?
       <u>

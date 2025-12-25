@@ -3,12 +3,13 @@ title: 'Hello, World!'
 date: 2024/04/01
 description: 'Are things working?'
 image:
-  url: '/assets/this-is-fine.png'
+  url: ./this-is-fine.png
   alt: 'The "This is fine" dog with everything around it on fire meme'
 tags: ['hello', 'blog']
 ---
 
-import Image from '@components/mdx/Image.astro';
+import { Image } from 'astro:assets';
+import dedYoshi from ./yoshi-ded.gif;
 
 This is mostly a test to see if things are working. If things aren't working,
 something is horribly wrong, so send me a message! Of course, I want people to
@@ -62,6 +63,6 @@ bored?
 
 Do something better with yourself, haha.
 
-<Image name="yoshi-ded.gif" alt="Yoshi falling down slope" />
+<Image src={dedYoshi} alt="Yoshi falling down slope" />
 
 Fin.
