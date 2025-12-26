@@ -44,6 +44,13 @@ const timeToRead = (() => {
 
 const formattedDate = format(new Date(date), 'PPP');
 
+const imageSrc = image.url.src;
+
+const absoluteImageUrl =
+  /^(https?:)?\/\//i.test(imageSrc) ? imageSrc : (
+    new URL(imageSrc, Astro.site).href
+  );
+
 const { Content } = await post.render();
 ---
 
@@ -51,7 +58,7 @@ const { Content } = await post.render();
   {title}
   {description}
   date={new Date(date)}
-  image={image.url.src}
+  image={absoluteImageUrl}
   pageType={post.slug}
   {authors}
 >
