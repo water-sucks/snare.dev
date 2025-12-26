@@ -1,0 +1,555 @@
+---
+title: 'SourceHut: Git Done Right?'
+date: 2025/12/25
+description: 'My personal review of SourceHut after using it for a few months'
+image:
+  url: ./octocat-on-fire.jpg
+  alt: 'The GitHub mascot, Octocat, set on fire'
+tags: ['programming', 'github', 'srht']
+---
+
+import ImageWithCaption from '@components/mdx/ImageWithCaption.astro';
+
+God, I'm sick of GitHub.
+
+Where did it all go wrong?
+
+I started coding professionally in 2020, and learned how to use Git for the
+first time the year before. As many new GitHub users think at first, I thought
+GitHub was the _only_ way to use Git, and never even considered the fact that
+there are alternatives.
+
+In September 2025, I had enough of this, and moved all my repositories to
+[SourceHut](https://sourcehut.org).
+
+But why would one even use an alternative Git hosting service?
+
+## Why I Switched
+
+Consider 2020-2022 as my Git honeymoon. I used to create a GitHub repo for
+EVERYTHING. Hell, I still do. My CS homework? The very first thing I did at the
+start of each semester was `gh repo create` for each class. Like a madman, I
+even tried to use GitHub for versioning my music compositions at one
+point[^music-git]!
+
+However, this honeymoon would only last a couple of years.
+
+### AI Bullshit
+
+The first time I had started to realize that "maybe GitHub isn't a good
+platform" was 2023, when [GitHub Copilot](https://github.com/features/copilot)
+usage started to increase and the hype creeped into my daily life.
+
+I had never heard of Copilot until that point, and was not interested in most AI
+tools whatsoever. However, as more people in my life started to use it and
+professors told us that we would get extra credit for using these AI
+autocomplete plugins, I gave in. I signed up and integrated it into Neovim for a
+while[^neovim-experience].
+
+The more I looked into and used AI autocomplete tools (not just Copilot, I used
+Codeium/Windsurf at one point), the more appalled I became. And it wasn't just
+because the code completion wasn't good. Even the way that they sourced data was
+deeply unsettling for me. My research into this yielded the following questions
+that I could not find adequate answers for:
+
+1. Does training on GPL/other copyleft code make all generated code
+   [derivative works](https://en.wikipedia.org/wiki/Derivative_work), or what I
+   like to call **fruit of the copyleft tree**[^copyleft-tree]?
+2. Have authors/owners of code truly consented to letting their code be used for
+   AI training? And no, IMO,
+   [_a simple EULA is not enough for **true** informed consent_](https://www.digitalfluency.guide/data-ethics/the-informed-part-of-informed-consent).
+3. Since code quality on GitHub can be rather questionable, is there any
+   solution to Copilot potentially introducing vulnerabilities and other
+   poor-quality code to a project?
+
+These are just a few questions of many others in the legal gray areas GitHub is
+trotting in currently with all of their AI offerings. They only are digging
+themselves into deeper shit, considering that they likely use private
+repositories to train their models with
+[without admitting so publicly](https://github.com/orgs/community/discussions/171080).
+
+~~Interesting~~ unethical practices, to say the least.
+
+Fun fact, companies used to take these concerns extremely seriously. Even large
+companies like Apple has
+[restricted use of ChatGPT and Copilot](https://techcrunch.com/2023/05/19/apple-reportedly-limits-internal-use-of-ai-powered-tools-like-chatgpt-and-GitHub-copilot)
+in the past for the same reasons. Yet GitHub keeps peddling AI as a magic tool
+in many of its products and shoving Copilot into everywhere on the GitHub
+interface, including
+[pull request reviews](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review).
+
+These aren't the only problems with GitHub though. Far from it.
+
+### Work Gamification
+
+Every company has to figure out some way of keeping retention numbers high,
+right?
+
+_Yes_, including companies where more engagement with their software can _drive
+down_ the quality of the content on it[^engagement-quality].
+
+Surprisingly, user retention methods can apply to things OUTSIDE the content
+creation space (i.e. YouTube, TikTok, the like). And GitHub has figured out a
+way to make this apply to the entire software development life cycle...
+
+**Behold: the contribution graph!**.
+
+import contribGraph from './varun-contribution-graph-2025.webp';
+
+<ImageWithCaption
+  src={contribGraph}
+  alt="My GitHub contribution graph for 2025"
+  caption="My GitHub contribution graph for 2025"
+/>
+
+Christ, I used to be OBSESSED with this piece of shit. And I still am sometimes,
+but nowhere near the extent to which I was[^cgraph].
+
+Let me explain further.
+
+GitHub incentivizes you to use Git in the way that they have intended. And
+frankly, that means using every single resource on their platform. Filing
+issues, making pull requests, and commits that land on default branches all
+result in so-called "contributions". And
+[WAY too much emphasis is placed on this stupid green graph](https://news.ycombinator.com/item?id=11404482)
+by some people, including prospective employers. That's just bonkers to me now.
+
+This causes people to either
+[spoof commit history](https://github.com/gelstudios/gitfiti), create small
+commits solely for getting darker squares on the graph, and even make
+[AI-generated spammy pull requests](https://navendu.me/posts/ai-generated-spam-prs/)[^worst-contrib-ever]
+for the resume's sake. It makes maintainers' lives hell, decreases code quality,
+and all for what? A green graph?
+
+import greenGraphsAndHam from './green-graphs-and-ham.webp';
+
+<ImageWithCaption
+  src={greenGraphsAndHam}
+  alt="Dr. Seuss Green Eggs and Ham photoshop with GitHub graph"
+  caption="I do not like green graphs and ham, Sam I am."
+/>
+
+This is definitely a smaller problem than the others, but it's still something
+that has annoyed me ever since I noticed it in my own behavior. Something had to
+change.
+
+### Pull Requests: The Antichrist's Git Workflow
+
+Git branches originally worked best with local workflows.
+
+GitHub changed that, and did so radically. No, radical does not necessarily mean
+good in this case.
+
+They made branches the primary means of communication between developers, rather
+than the commits themselves (I'll call commits "_patches_" and a series of them
+a "_patchset_" later on). I didn't know when I first started using Git at first,
+but this was not the original way Git was designed to be used.
+
+Linus Torvalds, the creator of Git himself, has
+[historically LAID into GitHub](https://github.com/torvalds/linux/pull/17#issuecomment-5654674)
+for this branch-based contribution model, and they've simply ignored him and
+continued on with their ways[^linus-god]. Opinionated is good and all, but not
+when the opinions are just _bad_.
+
+GitHub's pull request UI is breathtakingly terrible once you start to see its
+flaws. First off: **diff soup**. Diff soup has genuinely made my life hell in
+many instances at work and in open source as well.
+
+What is diff soup, you may ask? I define diff soup as large pull requests that
+make it extremely hard to find the context and/or history of a given patchset
+and the corresponding reviews/its evolution over time.
+
+Let's do a small case study.
+
+Take a large pull request such as
+[this one that introduces a C API to the Nix package manager](https://github.com/NixOS/nix/pull/8699).
+It went for more than a YEAR before getting merged, with hundreds of review
+comments in a flat thread. If we're talking code smells, this is a fucking
+sewer.
+
+**Observation I**: It's basically impossible to find the thread of conversation,
+since many comments apply to code that simply does not exist anymore. Fun fact,
+GitHub oftentimes simply does not display some review comments when their
+corresponding diffs disappear. That's because the whole diff is displayed as it
+was in its most recent form. You can't view what the repository was like before,
+unless you stack your commits on top of previous ones. So if you want previous
+review comments, you basically have to say your farewells to rebasing.
+
+Sure, there are "outdated" comments, but those get applied to different comments
+somewhat inconsistently and it's irritating.
+
+**Observation II**: Speaking of the actual diff view, some diffs can be MASSIVE.
+The GitHub UI is very limited in what it can show, and you can't exactly slice
+up a diff and talk about suggestions outside of the changed code that may have
+been affected. So the code review process itself is also limited in that way.
+
+**Observation III**: The very notion of "resolving" comments is overrated in its
+current form. They're just a way to hide comments (both "outdated" AND
+"up-to-date" comments; "resolved" and "outdated" are too similar, to be frank).
+Just look at the PR and how many resolved comments there are; how many more are
+actually related to the up-to-date code on that branch anymore?
+
+Also, pet peeve of mine: for some reason, an author can resolve comments without
+actually acknowledging or applying the reviewer's requested changes. They really
+shouldn't be allowed to do that; the original commenter should mark it as
+resolved after having the appropriate discussion or verifying the requested
+changes have been made.
+
+Oh, and don't get me STARTED on the terms GitHub uses for merging strategies for
+pull requests.
+
+- **Create a merge commit** :: this is the pull request merging strategy GitHub
+  incentivizes, and these merge commits are ugly as FUCK.
+- **Squash and merge** :: this turns the whole branch diff into a single commit
+  and fast-forwards the target branch with the new squashed commit. NO, it does
+  NOT create a merge commit, as the name seems to suggest.
+- **Rebase and merge** :: God FORBID we use the right fucking terms for Git
+  operations. THESE ARE CONTRADICTORY TERMS! IT'S JUST REBASING ON TOP OF THE
+  TARGET BRANCH, YOU FUCKS!
+
+As you can see from my sailor's mouth, this is a subject that will ALWAYS cause
+me to crash out when it comes up.
+
+As if we couldn't have more problems with the pull request workflow, GitHub has
+[no interest in preserving GPG signatures](https://github.com/orgs/community/discussions/10410)
+through the latter two strategies. In order for you to keep GPG signatures, you
+HAVE to use merge commits. And we already know how ugly those end up looking in
+the subsequent history[^merging-without-ui].
+
+They put in all this work for showing GPG signatures alongside code, and they
+don't even support it properly when merging a pull request into mainline
+branches? Laughably negligent and lazy on GitHub's behalf.
+
+And no, `gh pr` does not make using GitHub pull requests easier. If anything,
+it's just a shitty replica of the web UI in CLI form.
+
+The flawed pull request flow is ultimately what caused me to get so fed up with
+GitHub as time went on. I was curious about how projects like the Linux Kernel
+Mailing List (LKML) and PostgreSQL handle contributions, since they've gone on
+for decades without needing GitHub whatsoever. Not to mention Git was literally
+DESIGNED for the LKML, so I wanted to see how Git was originally meant to be
+used.
+
+**Enter [SourceHut](https://sourcehut.org)**.
+
+## Getting Started
+
+I saw SourceHut for the first time when looking at Zig, sometime in mid-2023. I
+noticed that some of their CI infrastructure ran on `builds.sr.ht` (specifically
+FreeBSD), and was curious about what SourceHut offered.
+
+One of the very first things I saw was that it was created by Drew DeVault, and
+that got me very interested. While the dude is very polarizing, I tend to like a
+lot of his takes on software, and I also love using Wayland (using
+[`riverwm`](https://codeberg.org/river/river) at time of writing).
+
+I actually ended up purchasing a subscription to support his efforts in July
+2023, but never used the platform until September 2025. That's when I finally
+snapped, and GitHub had given me enough trouble. Diff soup was one thing, but I
+had finally come to the realization that until GitHub takes its head out of its
+own ass with regards to AI, I had no business of keeping my primary means of
+development there. Plus, I really badly wanted to learn how to use Git with
+email, and I figure diving into the deep end headfirst is the best way to do
+so[^deep-end-nix].
+
+### Hold On, Why Not GitLab/Forgejo/Gitea Or Something Else?
+
+Some of the problems I have with these platforms are similar to the one with
+GitHub, minus the AI bullshit I suppose.
+
+For them, it's not exactly the project/entities behind them as much as they copy
+the GitHub model of pull requests that I have started to dislike.
+
+Feel free to [send me an email](mailto:varun@snare.dev) for further discussion.
+
+### Porting Repositories
+
+I'm not gonna lie, porting repositories was literally seamless. After adding my
+SSH keys (both my `gpg-ssh-agent` key and a machine-specific one), I just ran:
+
+```
+$ git remote set-url origin git@git.sr.ht:~watersucks/<repo-name>
+```
+
+in each one of my repos and pushed them up. SourceHut automatically created a
+private repository for each of these, and then I toggled their visibility to
+"public" and voila! My repos were ported over.
+
+Not so fast, what about discoverability?? Great question.
+
+### GitHub Mirroring
+
+GitHub is popular because everyone uses it. Now, I don't have to necessarily USE
+the GitHub facilities, but I can optimize my own projects for both drive-by
+GitHub contributors AND SourceHut users by mirroring my repository to GitHub on
+every push.
+
+Here comes `builds.sr.ht` to save the day!
+
+I created a (mostly) identical build manifest in each repository at
+`.builds/mirror.yml`:
+
+```yml
+image: alpine/edge
+
+secrets:
+  - <GITHUB_TOKEN_SECRET>
+
+sources:
+  - https://git.sr.ht/~watersucks/<repo-name>
+
+tasks:
+  - write-ssh-config: |
+      cat >> ~/.ssh/config << EOF
+      Host github.com
+        IdentityFile ~/.ssh/srht_github_mirror
+        IdentitiesOnly yes
+        BatchMode yes
+        StrictHostKeyChecking no
+      EOF
+  - mirror: |
+      cd ~/<repo>
+      git remote add github git@github.com:water-sucks/<repo>.git
+      git push --mirror github
+
+triggers:
+  - action: email
+    condition: failure
+    to: 'Varun Narravula <varun@snare.dev>'
+```
+
+Once I pushed it up, SourceHut automatically ran this manifest and synced the
+repository to GitHub on every push. I put up a notice in the READMEs and on the
+GitHub repository description that the primary sources were at SourceHut, but
+that I would still accept pull requests and issues, and mirror them over into
+SourceHut when applicable.
+
+Now, there are limitations to these build manifests, which I'll go over later.
+But so far, this move was going pretty well.
+
+## Patch-Based Email Workflow
+
+Now comes the hard part: figuring out the email-based workflow.
+
+I had to create mailing lists for each project already, and followed the
+recommended layout of having three lists: `<repo>-devel`, used for
+development/sending patches, `<repo>-announce` for announcing releases/breaking
+changes and other such things, and `<repo>-discuss` for general discussion.
+
+Now, I didn't expect much engagement at all, and that's fine. Most people are
+simply not going to know how to even interact with SourceHut properly, since the
+documentation is sparse[^sparse-docs] compared to GitHub. But at the very least,
+I had to set something up in order to respond to these things/create patches
+myself for other projects on the platform.
+
+To that point, I found [`aerc`](https://aerc-mail.org/), Drew DeVault's own
+email client[^aerc-maintainer]. It seemed really cool to manage email through
+the terminal, so I picked it up, added it to my
+[home-manager](https://github.com/nix-community/home-manager) configuration, and
+watched a metric shit-ton of videos on how to do email-based workflows.
+
+Basically, the idea is this when submitting patches:
+
+- Do development on a local branch, make your commits.
+- Once your commits are ready, run `git format-patch` on the patchset.
+- Send the patchset off with `git send-email` to the proper mailing list,
+  optionally with a cover letter.
+- If changes are requested, then send another version of that same patchset
+  after applying the requested fixes. `git send-email` and `git format-patch`
+  support versioning patchsets like this, and even implement tooling around
+  diffing between patchsets in the form of `git range-diff`. I'll talk about my
+  workflow around this in a later post, so stay tuned.
+- Otherwise, wait for the patch to get accepted and for a reply!
+
+Branches in this flow are for local development organization only. This is a
+COMPLETE mindfuck compared to the GitHub flow, and took me a minute to get used
+to.
+
+For my own projects, branch organization was still great, but all my commits
+simply ended up on `main`, since I was the trusted core maintainer. In GitHub
+land, I would not configure this sort of access, even to my own main branch. I'd
+always make pull requests to main and self-merge instead. I'm not gonna lie,
+this made much more sense than the GitHub way.
+
+When you are accepting patches from a list, the flow goes like this:
+
+- Open `aerc` to find the patch email(s).
+- Check out the main development (trunk) branch.
+- Pipe the contents of the email(s) to `git am`.
+- Make sure shit works.
+- If good, then rebase it into your trunk and push it up, and reply back with a
+  "Thanks!" and the new, merged commit ref.
+- Otherwise, slice up the diffs, and review them by simply _editing_ the patch
+  itself inline.
+
+You wanna know something funny, dear reader?
+
+**[My first contributed patch on SourceHut was to SourceHut itself.](https://lists.sr.ht/~sircmpwn/sr.ht-dev/%3C20251214054157.3149363-1-varun@snare.dev%3E)**
+
+At least one that wasn't to my own project.
+
+I ended up fixing a bug with the issue tracker `todo.sr.ht` itself that I found
+when attempting to resolve one of my issues automatically through email. This
+was super annoying at the time, but it does highlight the fact that SourceHut is
+_not_ perfect.
+
+## Hear Ye, Hear Ye! What Problems Have Arisen, My Dear SourceHut?
+
+Let's talk about some other problems.
+
+Fixing bugs with the platform itself is one thing. I like using alpha software
+and contributing fixes back, but this can interfere with my own project
+development. I am not employed by SourceHut, so any bugs with it that I must fix
+must come out of my own time.
+
+### GitHub's Monopoly
+
+I've mentioned this earlier, but I am still somewhat stuck in the GitHub
+ecosystem for multiple reasons.
+
+First off, at the time of writing, I still use Nix and have many projects in the
+NixOS space. I maintain
+[`nixos-cli`](https://github.com/nix-community/nixos-cli), and including a
+project in `nix-community` for visibility requires me to use GitHub for the
+upstream. I could develop it on SourceHut personally, but mirroring a repo like
+this seems like an unreasonable waste of SourceHut compute when I'm gonna
+contribute it to the GitHub upstream anyway.
+
+Additionally, the Neovim plugin ecosystem often assumes GitHub as a default when
+using `owner/repo` style syntax for including plugins. My own
+[`darkrose.nvim`](https://sr.ht/~watersucks/darkrose.nvim) colorscheme is
+mirrored to GitHub for precisely this reason, to make it easier to use.
+
+Also, my workplace ([Pangolin](https://pangolin.net)) heavily uses GitHub for
+its open source hosting and for free GitHub Actions compute. If I want my
+paycheck, GitHub it is when I'm on my 9-5.
+
+### builds.sr.ht Usability Issues
+
+`builds.sr.ht`, while it is remarkable for what it offers, is missing some
+features that I sorely miss from GitHub Actions, such as cronjobs (i.e. for my
+weekly NixOS configuration flake updates)[^nixed-updates].
+
+It's also somewhat limiting to only be able to run 4 jobs on every push, but I
+understand this limitation; build compute cannot be free forever, think of the
+trees!
+
+One more gripe with `builds.sr.ht`: for public projects, where do I send build
+failures? Does it happen automatically with CI? Mailing list CI is just very
+confusing, and I don't get who receives the notifications. I don't want everyone
+in a `<repo>-devel` list to receive notice of my own stupid mistakes, and I
+don't want to see contributors' CI failures either. Triggers aren't very
+flexible at the moment, and I don't know how to expand them properly. If someone
+knows how, [send me an email](mailto:varun@snare.dev), I'd appreciate it.
+
+### External Usability
+
+This is always gonna be a fundamental problem with SourceHut, in my opinion.
+
+The thing is, people have been so conditioned by GitHub to _expect_ the
+contribution process to be streamlined for them. That's because GitHub is
+HEAVILY optimized for drive-by contributions. Any stupid person can make a pull
+request without explaining the purpose of it properly. The very nature of
+sending patches over email is intimidating for many Git users, and will tend to
+invite more experienced developers rather than noob ones.
+
+The analogy I make: since GitHub is optimized for drive-by contributions,
+_SourceHut simply wants you to park your damn car and to be more persistent for
+a change_. It's a good attitude to have, and one that I share.
+
+However, this drives down contributions massively. Even in my own GitHub
+repositories, I see people that fork them, have changes in separate branches,
+but have not made pull requests despite me saying that it is okay.
+
+Some days, I fear that because of this barrier to entry, SourceHut may never
+gain popularity and be stuck in a forever cycle of this. But perhaps that is for
+the best; who knows?
+
+I still do get quality contributions over email, just less of them than I would
+have otherwise received in the form of a GitHub pull request. And that's fine
+for now.
+
+### What The Future Holds
+
+In the future, I may have figured out my problems and gripes with SourceHut, and
+may write a future post about that as well. Stay tuned!
+
+Fin.
+
+[^music-git]:
+    Yeah, don't do this. The file limits are rather low for GitHub and even with
+    Git LFS, the actual size of the repo explodes and you won't be able to host
+    it eventually. Not to mention who cares about how music projects evolve?
+    Most people just want the finished product, not shitty half-finished demos.
+
+[^neovim-experience]:
+    I actually gave up using it. The signal-to-noise ratio was laughably low for
+    completions, and even when I set Codeium off by default, I found that I
+    would never really enable it. And not because I forgot it existed; I just
+    didn't care much for the output even when I enabled it.
+
+[^copyleft-tree]:
+    "Fruit of the copyleft tree" is a term I came up with to refer to code that
+    should be available on request due to GPL/other copyleft licensing. It's a
+    play on
+    "[fruit of the poisonous tree](https://en.wikipedia.org/wiki/Fruit_of_the_poisonous_tree)"
+    in legal cases. I really like this phrase, since I came up with it while
+    stoned.
+
+[^engagement-quality]:
+    My belief is that as the size of a platform grows, so does the amount of
+    slop on it. With ALL of these big tech platforms, user retention tactics
+    often end up assisting in the creation of more frequent trash content and
+    end up tanking the signal-to-noise ratio for good content. Content in this
+    case doesn't only mean videos/other media, it also means project activity,
+    like code contributions, bug reports, and documentation updates.
+
+[^cgraph]:
+    I actually bought a domain, [cgraph.dev](https://cgraph.dev), which I was
+    gonna make a small platform-agnostic contribution graph for. However, I
+    haven't really worked on this at all, and have been considering just giving
+    up on it for the same reasons I mention here.
+
+[^worst-contrib-ever]:
+    If you want to hurt yourself in confusion, see the following
+    [AI-generated merge request](https://gitlab.freedesktop.org/mesa/mesa/-/work_items/1373)
+    to the Mesa project on GitLab. Some idiot had the absolute fucking GALL to
+    say they didn't know what they were doing and were submitting a patch to a
+    low-level Linux graphics stack ANYWAY. I wish I could throw people off
+    building sometimes.
+
+    Side note: We should all aspire to be like Timur in that merge request.
+
+[^linus-god]:
+    I don't regard Torvalds as a god. I disagree with him on plenty of things,
+    but agree with him in this instance about GitHub. Don't come after me for
+    citing his ethos.
+
+[^merging-without-ui]:
+    Yes, it is possible to merge without the GitHub UI. But then you don't even
+    get a way to automatically close the pull request with a "merged" status!
+    Daniel Stenberg, the `curl` maintainer, has mentioned this on his own
+    [blog post on his own Git workflow](https://daniel.haxx.se/blog/2020/11/09/this-is-how-i-git/),
+    and you can see how stupid funny it looks by looking at the
+    [`curl` pull request list](https://github.com/curl/curl/pulls?q=is%3Apr+is%3Aclosed),
+    where they all show up as closed.
+
+[^deep-end-nix]:
+    I did this with NixOS, all the way back in 2020 or so. Ended up wiping my
+    Void Linux drive by accident from the NixOS installer ISO with `dd` and it's
+    now my daily driver. So I'm used to this kind of uprooting thing and
+    learning the hard way :}
+
+[^sparse-docs]:
+    I seem to have a fondness for cool projects with poor/subpar/sparse docs:
+    Nix, Zig, and now SourceHut. I have a fucking problem.
+
+[^aerc-maintainer]:
+    He apparently doesn't maintain the project anymore, it's someone else now.
+    But still, cool fact I guess.
+
+[^nixed-updates]:
+    I use [cron-job.org](https://cron-job.org) to do this every Saturday, and
+    all it does is use the SourceHut GraphQL API to send an ad-hoc build
+    manifest that I have to MANUALLY keep in sync with what's in the repo.
+    Genuinely so stupid lol.
