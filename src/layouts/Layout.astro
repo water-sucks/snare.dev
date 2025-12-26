@@ -54,8 +54,11 @@ const { title, description, type, image, date, pageType, authors } =
       openGraph={{
         basic: {
           title,
-          type: type || 'A generic type.',
+          type: type || 'website',
           image: image || defaultImage,
+        },
+        optional: {
+          description,
         },
         article: {
           authors: authors || ['Varun Narravula'], // Who else? Lmao.
