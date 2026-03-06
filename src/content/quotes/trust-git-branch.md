@@ -1,6 +1,7 @@
 ---
 author: '@bashbunni'
 source: Bluesky
+target: https://bsky.app/profile/bashbunni.dev/post/3lnnvcwpbfk2p
 date: 2025/08/10
 ---
 

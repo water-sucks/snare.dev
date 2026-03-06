@@ -1,6 +1,7 @@
 ---
 author: Clayton W. Ramsey
 source: I'd Rather Read The Prompt
+target: https://claytonwramsey.com/blog/prompt
 date: 2025/05/06
 ---
 

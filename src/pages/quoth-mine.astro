@@ -12,6 +12,7 @@ const rendered = await Promise.all(
       Content,
       author: quote.data.author,
       source: quote.data.source,
+      target: quote.data.target,
     };
   }),
 );
@@ -35,13 +36,18 @@ const rendered = await Promise.all(
 
   <div class="quote-list">
     {
-      rendered.map(({ Content, author, source }) => (
+      rendered.map(({ Content, author, source, target }) => (
         <blockquote class="quote-item">
           <div class="quote-text">
             <Content />
           </div>
           <footer class="quote-footer">
-            ~&gt; <strong>{author}</strong>, {`"${source}"`}
+            ~&gt; <strong>{author}</strong>,{' '}
+            {target ?
+              <a href={target} target="_blank" rel="noopener noreferrer">
+                "{source}"
+              </a>
+            : `"${source}"`}
           </footer>
         </blockquote>
       ))

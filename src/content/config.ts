@@ -21,6 +21,7 @@ const quotesCollection = defineCollection({
   schema: z.object({
     author: z.string(),
     source: z.string(),
+    target: z.string().optional(),
     date: z.string(),
   }),
 });
