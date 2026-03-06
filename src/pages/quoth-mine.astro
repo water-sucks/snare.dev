@@ -30,7 +30,7 @@ const rendered = await Promise.all(
   </p>
 
   <div id="quote-controls" class="controls" hidden>
-    <button id="show-all">Show All</button>
+    <button id="random-mode-toggle">Random Mode</button>
     <button id="random">I'm Feeling Lucky</button>
   </div>
 
@@ -58,12 +58,12 @@ const rendered = await Promise.all(
     (() => {
       const quotes = document.querySelectorAll<HTMLElement>('.quote-item');
       const controls = document.getElementById('quote-controls')!;
-      const showAllBtn = document.getElementById('show-all')!;
+      const randomModeToggle = document.getElementById('random-mode-toggle')!;
       const randomBtn = document.getElementById('random')!;
 
       if (!quotes.length) return;
 
-      let showingAll = false;
+      let showingAll = true;
 
       const pickRandom = () => {
         const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -78,15 +78,15 @@ const rendered = await Promise.all(
         showingAll = true;
       };
 
-      showAllBtn.addEventListener('click', () => {
+      randomModeToggle.addEventListener('click', () => {
         if (showingAll) {
           pickRandom();
-          randomBtn.style.display = '';
-          showAllBtn.textContent = 'Show All';
+          randomBtn.style.display = 'inline';
+          randomModeToggle.textContent = 'Show All';
         } else {
           showAll();
           randomBtn.style.display = 'none';
-          showAllBtn.textContent = 'Random Mode';
+          randomModeToggle.textContent = 'Random Mode';
         }
       });
 
@@ -94,7 +94,6 @@ const rendered = await Promise.all(
         pickRandom();
       });
 
-      pickRandom();
       controls.hidden = false;
     })();
   </script>
@@ -140,5 +139,9 @@ const rendered = await Promise.all(
 
   .controls button:hover {
     background-color: #a03c64;
+  }
+
+  #random {
+    display: none;
   }
 </style>
