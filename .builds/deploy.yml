@@ -2,6 +2,7 @@ image: nixos/unstable
 
 secrets:
   - 774e8c37-72dd-42a6-acd9-7934f854f52d
+  - 172d14eb-85d9-4bc8-99bc-1f9672dc5b98
 
 packages:
   - nixos.netlify-cli
@@ -16,6 +17,14 @@ sources:
 tasks:
   - build: |
       cd ~/snare.dev
+
+      {
+        set +x
+        . ~/.goatcounter-secret
+        set -x
+      }
+
+      export GOATCOUNTER_API_KEY
 
       nix develop .# -c npm ci
       nix develop .# -c npm run build
@@ -34,6 +43,7 @@ tasks:
       }
 
       export NETLIFY_AUTH_TOKEN
+      export GOATCOUNTER_API_KEY
 
       netlify deploy --site=$NETLIFY_SITE_ID --dir=./dist --prod --no-build
 
