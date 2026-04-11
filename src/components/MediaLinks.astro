@@ -3,6 +3,12 @@ import { Icon } from 'astro-icon/components';
 ---
 
 <div class="icons">
+  <span class="tooltip" data-title="SourceHut">
+    <a href="https://sr.ht/~watersucks">
+      <Icon name="simple-icons:sourcehut" size={24} />
+    </a>
+  </span>
+
   <span class="tooltip" data-title="GitHub">
     <a href="https://github.com/water-sucks">
       <Icon name="la:github-square" size={32} />
@@ -11,7 +17,7 @@ import { Icon } from 'astro-icon/components';
 
   <span class="tooltip" data-title="Matrix">
     <a href="https://matrix.to/#/@water-sucks:matrix.org">
-      <Icon name="mdi:matrix" size={32} />
+      <Icon name="mdi:matrix" size={28} />
     </a>
   </span>
 
@@ -46,6 +52,7 @@ import { Icon } from 'astro-icon/components';
     flex-direction: row;
     gap: 1em;
     justify-content: center;
+    align-items: center;
     padding-bottom: 2em;
   }
 
