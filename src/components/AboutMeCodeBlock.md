@@ -3,6 +3,7 @@ data Person = Person {
   name :: String,
   desc :: String,
   occupation :: [String],
+  work :: String,
   resume :: String,
   contact :: [(String, String)]
 } deriving (Show)
